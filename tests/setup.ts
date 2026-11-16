@@ -22,3 +22,6 @@ vi.stubGlobal('matchMedia', (query: string) => ({
 const emptyRect = { x: 0, y: 0, width: 0, height: 0, top: 0, right: 0, bottom: 0, left: 0 };
 Range.prototype.getBoundingClientRect = () => ({ ...emptyRect, toJSON: () => ({}) });
 Range.prototype.getClientRects = () => [] as unknown as DOMRectList;
+
+// reka scrolls highlighted listbox items into view; jsdom has no layout
+Element.prototype.scrollIntoView = () => {};

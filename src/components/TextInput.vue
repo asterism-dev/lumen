@@ -2,7 +2,11 @@
 const model = defineModel<string>({ required: true });
 
 withDefaults(
-  defineProps<{ type?: 'text' | 'search'; placeholder?: string; disabled?: boolean }>(),
+  defineProps<{
+    type?: 'text' | 'search' | 'password';
+    placeholder?: string;
+    disabled?: boolean;
+  }>(),
   {
     type: 'text',
     placeholder: undefined,
@@ -22,7 +26,9 @@ withDefaults(
 
 <style>
 @layer lumen {
-  .lm-text-input {
+  .lm-text-input,
+  .lm-textarea,
+  .lm-select {
     font: inherit;
     color: inherit;
     background: var(--panel);
@@ -32,16 +38,25 @@ withDefaults(
     width: 100%;
     box-sizing: border-box;
   }
-  .lm-text-input:focus-visible {
+  .lm-text-input:focus-visible,
+  .lm-textarea:focus-visible,
+  .lm-select:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: -2px;
   }
-  .lm-text-input:disabled {
+  .lm-text-input:disabled,
+  .lm-textarea:disabled,
+  .lm-select:disabled {
     opacity: 0.5;
   }
   @media (max-width: 767.98px) {
-    .lm-text-input {
+    .lm-text-input,
+    .lm-textarea,
+    .lm-select {
       font-size: 16px;
+    }
+    .lm-text-input,
+    .lm-select {
       min-height: 44px;
     }
   }
