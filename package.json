@@ -41,7 +41,9 @@
     "typecheck": "vue-tsc --noEmit && vue-tsc --noEmit -p tsconfig.test.json",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "demo": "vite demo --config vite.config.ts",
+    "check:isolation": "node scripts/check-isolation.mjs"
   },
   "dependencies": {
     "@lucide/vue": "^1.0.0",
@@ -97,6 +99,7 @@
     }
   },
   "devDependencies": {
+    "@codemirror/lang-javascript": "^6.2.5",
     "@codemirror/lang-markdown": "^6.0.0",
     "@codemirror/language": "^6.0.0",
     "@codemirror/state": "^6.0.0",
