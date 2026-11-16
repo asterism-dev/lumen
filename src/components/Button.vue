@@ -3,12 +3,13 @@ import type { Component } from 'vue';
 
 withDefaults(
   defineProps<{
-    variant?: 'default' | 'accent' | 'danger';
+    variant?: 'default' | 'accent' | 'danger' | 'ghost';
+    size?: 'md' | 'sm';
     type?: 'button' | 'submit' | 'reset';
     disabled?: boolean;
     icon?: Component;
   }>(),
-  { variant: 'default', type: 'button', icon: undefined },
+  { variant: 'default', size: 'md', type: 'button', icon: undefined },
 );
 </script>
 
@@ -17,9 +18,12 @@ withDefaults(
     :type="type"
     :disabled="disabled"
     class="lm-button"
-    :class="[`lm-button--${variant}`, { 'lm-button--icon-only': !$slots.default }]"
+    :class="[
+      `lm-button--${variant}`,
+      { 'lm-button--sm': size === 'sm', 'lm-button--icon-only': !$slots.default },
+    ]"
   >
-    <component :is="icon" v-if="icon" :size="16" :stroke-width="1.75" />
+    <component :is="icon" v-if="icon" :size="size === 'sm' ? 14 : 16" :stroke-width="1.75" />
     <slot />
   </button>
 </template>
@@ -61,6 +65,16 @@ withDefaults(
   .lm-button--danger {
     color: var(--danger);
     border-color: var(--danger);
+  }
+  .lm-button--ghost {
+    background: transparent;
+    border-color: transparent;
+  }
+  .lm-button--sm {
+    padding: 2px 6px;
+  }
+  .lm-button--sm.lm-button--icon-only {
+    padding: 4px;
   }
   .lm-button svg {
     flex: none;
