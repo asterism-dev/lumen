@@ -6,18 +6,20 @@ import { renderMarkdown } from './render';
 const props = defineProps<{ source: string }>();
 const emit = defineEmits<{ 'open-link': [href: string] }>();
 
+const XLINK = 'http://www.w3.org/1999/xlink';
 const html = computed(() => renderMarkdown(props.source));
 
 function onClick(event: MouseEvent) {
-  const link = (event.target as Element).closest('a[href]');
+  const link = (event.target as Element).closest('a, area');
   if (!link) return;
   event.preventDefault();
-  emit('open-link', link.getAttribute('href') ?? '');
+  const href = link.getAttribute('href') ?? link.getAttributeNS(XLINK, 'href');
+  if (href) emit('open-link', href);
 }
 </script>
 
 <template>
-  <div class="lm-markdown" @click="onClick" v-html="html"></div>
+  <div class="lm-markdown" @click="onClick" @auxclick="onClick" v-html="html"></div>
 </template>
 
 <style>

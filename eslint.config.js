@@ -17,5 +17,6 @@ export default tseslint.config(
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
     rules: { 'vue/multi-word-component-names': 'off' },
   },
+  { files: ['src/markdown/MarkdownView.vue'], rules: { 'vue/no-v-html': 'off' } },
   prettier,
 );

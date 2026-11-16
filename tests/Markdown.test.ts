@@ -20,6 +20,16 @@ describe('renderMarkdown', () => {
   });
   it('escapes code without a language', () =>
     expect(renderMarkdown('```\n<i>x</i>\n```')).toContain('&lt;i&gt;'));
+  it('removes forms, buttons and image maps', () => {
+    const html = renderMarkdown(
+      '<form action="https://evil"><button>go</button></form><map name="m"><area href="https://evil" shape="default"></map><img src="x" usemap="#m">',
+    );
+    expect(html).not.toMatch(/<(form|button|area|map)/);
+  });
+  it('drops javascript: hrefs in raw html', () =>
+    expect(renderMarkdown('<a href="javascript:alert(1)">x</a>')).not.toMatch(
+      /href=.?javascript:/i,
+    ));
   it('linkifies bare urls', () =>
     expect(renderMarkdown('see https://x.y')).toContain('<a href="https://x.y"'));
 });
@@ -59,6 +69,24 @@ describe('MarkdownView', () => {
     const w = mountView('[**bold**](https://x.y)');
     const ev = new MouseEvent('click', { bubbles: true, cancelable: true });
     w.find('strong').element.dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true);
+    expect(w.emitted('open-link')).toEqual([['https://x.y']]);
+  });
+
+  it('intercepts svg xlink:href links', () => {
+    const w = mountView(
+      '<svg xmlns:xlink="http://www.w3.org/1999/xlink"><a xlink:href="https://evil"><text>t</text></a></svg>',
+    );
+    const ev = new MouseEvent('click', { bubbles: true, cancelable: true });
+    w.find('text').element.dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true);
+    expect(w.emitted('open-link')).toEqual([['https://evil']]);
+  });
+
+  it('intercepts middle clicks', () => {
+    const w = mountView('[x](https://x.y)');
+    const ev = new MouseEvent('auxclick', { bubbles: true, cancelable: true, button: 1 });
+    w.find('a').element.dispatchEvent(ev);
     expect(ev.defaultPrevented).toBe(true);
     expect(w.emitted('open-link')).toEqual([['https://x.y']]);
   });

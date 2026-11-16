@@ -11,6 +11,10 @@ const md: InstanceType<typeof MarkdownIt> = new MarkdownIt({
   },
 });
 
+const FORBID_TAGS = ['form', 'button', 'input', 'select', 'textarea', 'area', 'map'];
+
 export function renderMarkdown(source: string): string {
-  return DOMPurify.sanitize(md.render(source));
+  if (!DOMPurify.isSupported)
+    throw new Error('DOMPurify needs a DOM; refusing to return unsanitized HTML');
+  return DOMPurify.sanitize(md.render(source), { FORBID_TAGS });
 }
