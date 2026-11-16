@@ -1,10 +1,11 @@
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'node:path';
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, normalizePath, type Plugin } from 'vite';
 
-const srcRoot = resolve(import.meta.dirname, 'src') + '/';
+const srcRoot = normalizePath(resolve(import.meta.dirname, 'src')) + '/';
 
-const ownerOf = (id: string) => {
+const ownerOf = (rawId: string) => {
+  const id = normalizePath(rawId);
   if (!id.startsWith(srcRoot)) return undefined;
   const dir = id.slice(srcRoot.length).split('/')[0];
   return ['table', 'editor', 'markdown', 'dock'].includes(dir) ? dir : 'index';
