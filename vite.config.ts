@@ -2,24 +2,35 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 
-const entryCss = new Set(['index', 'table', 'editor', 'markdown', 'dock'].map((n) => `${n}.css`));
+const ownerOf = (id: string) => {
+  const dir = /\/src\/([^/]+)\//.exec(id)?.[1];
+  return dir && ['table', 'editor', 'markdown', 'dock'].includes(dir) ? dir : 'index';
+};
 
-// Shared-chunk CSS (e.g. Table, TextInput) is emitted as an orphan file; fold it into index.css.
-const mergeSharedCss: Plugin = {
-  name: 'lumen-merge-shared-css',
+// Shared-chunk CSS is emitted as an orphan file; fold it into the CSS of the entry owning its modules.
+const routeSharedCss: Plugin = {
+  name: 'lumen-route-shared-css',
   generateBundle(_, bundle) {
-    const index = bundle['index.css'];
-    if (index?.type !== 'asset') return;
-    for (const [name, asset] of Object.entries(bundle)) {
-      if (asset.type !== 'asset' || !name.endsWith('.css') || entryCss.has(name)) continue;
-      index.source = `${asset.source}\n${index.source}`;
-      delete bundle[name];
+    for (const chunk of Object.values(bundle)) {
+      if (chunk.type !== 'chunk' || chunk.isEntry) continue;
+      const owners = new Set(
+        chunk.moduleIds.filter((id) => !id.includes('node_modules')).map(ownerOf),
+      );
+      for (const cssName of chunk.viteMetadata?.importedCss ?? []) {
+        const css = bundle[cssName];
+        if (css?.type !== 'asset') continue;
+        if (owners.size !== 1) this.error(`${cssName} spans entries: ${[...owners].join(', ')}`);
+        const target = bundle[`${[...owners][0]}.css`];
+        if (target?.type !== 'asset') this.error(`no entry CSS to receive ${cssName}`);
+        target.source = `${css.source}\n${target.source}`;
+        delete bundle[cssName];
+      }
     }
   },
 };
 
 export default defineConfig({
-  plugins: [vue(), mergeSharedCss],
+  plugins: [vue(), routeSharedCss],
   build: {
     target: ['safari15.4', 'chrome111', 'firefox115'],
     cssCodeSplit: true,

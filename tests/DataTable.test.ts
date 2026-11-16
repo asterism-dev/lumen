@@ -61,6 +61,15 @@ describe('DataTable', () => {
     expect(wrapper.emitted('update:columnFilters')?.at(-1)).toEqual([{ name: 'MM' }]);
   });
 
+  it('accepts filter and columnFilters from outside', async () => {
+    mountTable();
+    await wrapper.setProps({ filter: 'alp' });
+    expect(column(0)).toEqual(['Alpha']);
+    await wrapper.setProps({ filter: '', columnFilters: { name: 'mm' } });
+    expect(column(0)).toEqual(['gamma']);
+    expect((wrapper.find('th input').element as HTMLInputElement).value).toBe('mm');
+  });
+
   it('emits update:sorting and accepts sorting from outside', async () => {
     mountTable();
     await sortButton('Size').trigger('click');

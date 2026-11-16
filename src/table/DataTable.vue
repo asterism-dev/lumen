@@ -111,9 +111,8 @@ function setColumnFilter(key: string, value: string) {
 }
 
 const slots = useSlots();
-const forwarded = computed(() =>
-  Object.keys(slots).filter((name) => name === 'empty' || name.startsWith('cell-')),
-);
+const forwardedSlots = () =>
+  Object.keys(slots).filter((name) => name === 'empty' || name.startsWith('cell-'));
 </script>
 
 <template>
@@ -151,7 +150,7 @@ const forwarded = computed(() =>
           @update:model-value="setColumnFilter(column.key, $event)"
         />
       </template>
-      <template v-for="name in forwarded" :key="name" #[name]="slotProps">
+      <template v-for="name in forwardedSlots()" :key="name" #[name]="slotProps">
         <slot :name="name as `cell-${string}`" v-bind="slotProps" />
       </template>
     </Table>
