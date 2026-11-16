@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0 (2026-11-16)
+
+### Feat
+
+- close lumen gaps from desktop migration round 2 (#3)
+
 ## v0.2.0 (2026-11-16)
 
 ### Feat
