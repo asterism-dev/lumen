@@ -26,6 +26,10 @@ describe('renderMarkdown', () => {
     );
     expect(html).not.toMatch(/<(form|button|area|map)/);
   });
+  it('removes mathml', () =>
+    expect(
+      renderMarkdown('<math><mrow href="https://evil"><mi>x</mi></mrow></math>'),
+    ).not.toContain('<math'));
   it('drops javascript: hrefs in raw html', () =>
     expect(renderMarkdown('<a href="javascript:alert(1)">x</a>')).not.toMatch(
       /href=.?javascript:/i,
@@ -79,6 +83,28 @@ describe('MarkdownView', () => {
     );
     const ev = new MouseEvent('click', { bubbles: true, cancelable: true });
     w.find('text').element.dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true);
+    expect(w.emitted('open-link')).toEqual([['https://evil']]);
+  });
+
+  it('intercepts clicks inside any element carrying an href', () => {
+    const w = mountView('<p>t</p>');
+    w.find('p').element.setAttribute('href', 'https://evil');
+    const ev = new MouseEvent('click', { bubbles: true, cancelable: true });
+    w.find('p').element.dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true);
+    expect(w.emitted('open-link')).toEqual([['https://evil']]);
+  });
+
+  it('intercepts clicks inside an element with a namespaced href', () => {
+    const w = mountView('<p>t</p>');
+    w.find('p').element.setAttributeNS(
+      'http://www.w3.org/1999/xlink',
+      'xlink:href',
+      'https://evil',
+    );
+    const ev = new MouseEvent('click', { bubbles: true, cancelable: true });
+    w.find('p').element.dispatchEvent(ev);
     expect(ev.defaultPrevented).toBe(true);
     expect(w.emitted('open-link')).toEqual([['https://evil']]);
   });

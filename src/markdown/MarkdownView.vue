@@ -10,7 +10,7 @@ const XLINK = 'http://www.w3.org/1999/xlink';
 const html = computed(() => renderMarkdown(props.source));
 
 function onClick(event: MouseEvent) {
-  const link = (event.target as Element).closest('a, area');
+  const link = (event.target as Element).closest('a, area, [href], [*|href]');
   if (!link) return;
   event.preventDefault();
   const href = link.getAttribute('href') ?? link.getAttributeNS(XLINK, 'href');

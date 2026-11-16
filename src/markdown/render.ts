@@ -11,7 +11,7 @@ const md: InstanceType<typeof MarkdownIt> = new MarkdownIt({
   },
 });
 
-const FORBID_TAGS = ['form', 'button', 'input', 'select', 'textarea', 'area', 'map'];
+const FORBID_TAGS = ['form', 'button', 'input', 'select', 'textarea', 'area', 'map', 'math'];
 
 export function renderMarkdown(source: string): string {
   if (!DOMPurify.isSupported)
