@@ -27,7 +27,7 @@ defineProps<{ value: string; disabled?: boolean }>();
     display: flex;
     align-items: center;
     gap: 8px;
-    min-height: 28px;
+    min-height: var(--lm-touch-target, 28px);
     padding: 4px 6px;
     border-radius: var(--radius);
     cursor: default;
@@ -70,12 +70,12 @@ defineProps<{ value: string; disabled?: boolean }>();
     visibility: visible;
   }
   @media (max-width: 767.98px) {
-    .lm-list-item {
-      min-height: 44px;
-    }
     .lm-list-item__actions {
       visibility: visible;
     }
+  }
+  .lm-touch .lm-list-item__actions {
+    visibility: visible;
   }
 }
 </style>

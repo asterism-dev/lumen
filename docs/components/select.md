@@ -16,8 +16,9 @@ import { Select } from '@asterism-dev/lumen';
 
 | Prop | Type | Default | Notes |
 | --- | --- | --- | --- |
-| `v-model` | `string \| number` | required | The option value keeps its type. |
+| `v-model` | `string \| number \| null` | required | The option value keeps its type. |
 | `options` | `SelectOption[]` | required | `{ value, label, disabled? }` |
+| `placeholder` | `string` | – | Shown while the value is `null`; not selectable. |
 | `disabled` | `boolean` | `false` |  |
 | `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 

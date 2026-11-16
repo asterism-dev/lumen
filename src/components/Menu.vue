@@ -12,6 +12,9 @@ export interface MenuItem {
   label: string;
   action: () => void;
   icon?: Component;
+  iconProps?: Record<string, unknown>;
+  // Shown as tooltip, e.g. why the item is disabled
+  title?: string;
   danger?: boolean;
   checked?: boolean;
   disabled?: boolean;
@@ -36,12 +39,19 @@ const open = defineModel<boolean>('open', { default: false });
           class="lm-menu__item"
           :class="{ 'lm-menu__item--danger': item.danger }"
           :disabled="item.disabled"
+          :title="item.title"
           @select="item.action()"
         >
           <span v-if="items.some((i) => i.checked !== undefined)" class="lm-menu__check">{{
             item.checked ? '✓' : ''
           }}</span>
-          <component :is="item.icon" v-if="item.icon" :size="16" :stroke-width="1.75" />
+          <component
+            :is="item.icon"
+            v-if="item.icon"
+            :size="16"
+            :stroke-width="1.75"
+            v-bind="item.iconProps"
+          />
           {{ item.label }}
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -88,10 +98,8 @@ const open = defineModel<boolean>('open', { default: false });
     display: inline-block;
     width: 1.2em;
   }
-  @media (max-width: 767.98px) {
-    .lm-menu__item {
-      min-height: 44px;
-    }
+  .lm-menu__item {
+    min-height: var(--lm-touch-target);
   }
 }
 </style>

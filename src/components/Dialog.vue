@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { X } from '@lucide/vue';
 import {
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogOverlay,
@@ -7,9 +9,11 @@ import {
   DialogRoot,
   DialogTitle,
 } from 'reka-ui';
+import Button from './Button.vue';
 
 const open = defineModel<boolean>('open', { required: true });
-defineProps<{ title: string; description?: string; width?: string }>();
+// The title slot (e.g. text with an inline Select) replaces the title prop
+defineProps<{ title?: string; description?: string; width?: string; closable?: boolean }>();
 defineEmits<{ openAutoFocus: [event: Event] }>();
 </script>
 
@@ -23,7 +27,14 @@ defineEmits<{ openAutoFocus: [event: Event] }>();
           v-bind="description ? {} : { 'aria-describedby': undefined }"
           @open-auto-focus="$emit('openAutoFocus', $event)"
         >
-          <DialogTitle as="strong" class="lm-dialog__title">{{ title }}</DialogTitle>
+          <div class="lm-dialog__header">
+            <DialogTitle as="strong" class="lm-dialog__title">
+              <slot name="title">{{ title }}</slot>
+            </DialogTitle>
+            <DialogClose v-if="closable" as-child>
+              <Button variant="ghost" size="sm" :icon="X" aria-label="Close" />
+            </DialogClose>
+          </div>
           <DialogDescription v-if="description" as="p" class="lm-dialog__description">
             {{ description }}
           </DialogDescription>
@@ -64,6 +75,15 @@ defineEmits<{ openAutoFocus: [event: Event] }>();
   }
   .lm-dialog:focus {
     outline: none;
+  }
+  .lm-dialog__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lm-dialog__title {
+    flex: 1;
+    min-width: 0;
   }
   .lm-dialog__description {
     margin: 0;

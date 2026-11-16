@@ -16,7 +16,7 @@ import { Table, type TableColumn } from '@asterism-dev/lumen';
 
 | Prop | Type | Default | Notes |
 | --- | --- | --- | --- |
-| `columns` | `TableColumn[]` | required | `{ key, label, align? }` |
+| `columns` | `TableColumn[]` | required | `{ key, label, align?, class? }`; `class` goes on every cell of the column. |
 | `rows` | `Row[]` | required |  |
 | `rowKey` | `string` | required | Unique key field. |
 | `sortState` | `Record<string, 'ascending' \| 'descending'>` | – | Sets `aria-sort`. |
@@ -25,4 +25,4 @@ import { Table, type TableColumn } from '@asterism-dev/lumen';
 
 ## Notes
 
-Slots: `header-<key>` (`{ column }`), `cell-<key>` (`{ row, value }`) and `empty`. Stop click propagation on interactive cells (`@click.stop`) so they do not trigger `row-click`. For sorting and filtering use [DataTable](data-table.md).
+Slots: `header-<key>` (`{ column }`), `cell-<key>` (`{ row, value }`), `footer-<key>` (`{ column }`, renders a `<tfoot>` row, e.g. totals) and `empty`. Stop click propagation on interactive cells (`@click.stop`) so they do not trigger `row-click`. For sorting and filtering use [DataTable](data-table.md).

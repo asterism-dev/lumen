@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Button, Dialog } from '@asterism-dev/lumen';
+import { Button, Dialog, Select } from '@asterism-dev/lumen';
 
 const open = ref(false);
+const createOpen = ref(false);
+const project = ref<number | null>(null);
+const projects = [
+  { value: 1, label: 'asterism' },
+  { value: 2, label: 'lumen' },
+];
 const busy = ref(false);
 
 function keepRunning() {
@@ -15,7 +21,10 @@ function keepRunning() {
 </script>
 
 <template>
-  <Button @click="open = true">Quit…</Button>
+  <div class="row">
+    <Button @click="open = true">Quit…</Button>
+    <Button @click="createOpen = true">New task…</Button>
+  </div>
   <Dialog
     :open="open"
     title="Stop the daemon too?"
@@ -26,5 +35,12 @@ function keepRunning() {
       <Button :disabled="busy" @click="open = false">Cancel</Button>
       <Button variant="accent" :disabled="busy" @click="keepRunning">Keep running</Button>
     </template>
+  </Dialog>
+  <Dialog v-model:open="createOpen" closable>
+    <template #title>
+      Create Task in
+      <Select v-model="project" :options="projects" placeholder="Project" aria-label="Project" />
+    </template>
+    <p>Body</p>
   </Dialog>
 </template>

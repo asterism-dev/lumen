@@ -23,3 +23,5 @@ import { Checkbox } from '@asterism-dev/lumen';
 ## Notes
 
 The slot is the label, and the whole row is clickable. Without a label, pass `aria-label`; it lands on the checkbox itself. On phones the hit area is at least 44px.
+
+`class` and `style` apply to the surrounding `<label>`, all other attributes to the control.

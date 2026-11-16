@@ -79,13 +79,11 @@ withDefaults(
   .lm-button svg {
     flex: none;
   }
-  @media (max-width: 767.98px) {
-    .lm-button {
-      min-height: 44px;
-    }
-    .lm-button--icon-only {
-      min-width: 44px;
-    }
+  .lm-button {
+    min-height: var(--lm-touch-target);
+  }
+  .lm-button--icon-only {
+    min-width: var(--lm-touch-target);
   }
 }
 </style>

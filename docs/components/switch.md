@@ -23,3 +23,5 @@ import { Switch } from '@asterism-dev/lumen';
 ## Notes
 
 Use a switch for settings that apply immediately, and a [Checkbox](checkbox.md) for picking items.
+
+`class` and `style` apply to the surrounding `<label>`, all other attributes to the control.

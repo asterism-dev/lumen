@@ -9,40 +9,65 @@ export interface TabItem {
   icon?: Component;
 }
 
-defineProps<{ tabs: TabItem[]; keepMounted?: boolean; closable?: boolean }>();
+defineOptions({ inheritAttrs: false });
+withDefaults(
+  defineProps<{
+    tabs: TabItem[];
+    keepMounted?: boolean;
+    closable?: boolean;
+    variant?: 'boxed' | 'underline';
+  }>(),
+  { variant: 'boxed' },
+);
 defineEmits<{ close: [value: string] }>();
 const model = defineModel<string>({ required: true });
 </script>
 
 <template>
-  <TabsRoot v-model="model" class="lm-tabs">
-    <TabsList class="lm-tabs__list">
-      <div v-for="tab in tabs" :key="tab.value" class="lm-tabs__item">
-        <TabsTrigger :value="tab.value" class="lm-tabs__tab">
-          <component :is="tab.icon" v-if="tab.icon" :size="14" :stroke-width="1.75" />
-          {{ tab.label }}
-        </TabsTrigger>
-        <button
-          v-if="closable"
-          type="button"
-          class="lm-tabs__close"
-          :aria-label="`Close ${tab.label}`"
-          @pointerdown.stop
-          @click.stop="$emit('close', tab.value)"
-        >
-          <X :size="14" :stroke-width="1.75" />
-        </button>
-      </div>
-    </TabsList>
-    <TabsContent
-      v-for="tab in tabs"
-      :key="tab.value"
-      :value="tab.value"
-      :force-mount="keepMounted || undefined"
-      class="lm-tabs__panel"
-    >
-      <slot :name="tab.value" />
-    </TabsContent>
+  <TabsRoot
+    v-model="model"
+    v-bind="{ ...$attrs, 'aria-label': undefined, 'aria-labelledby': undefined }"
+    class="lm-tabs"
+    :class="`lm-tabs--${variant}`"
+  >
+    <div class="lm-tabs__bar">
+      <TabsList
+        class="lm-tabs__list"
+        :aria-label="$attrs['aria-label'] as string"
+        :aria-labelledby="$attrs['aria-labelledby'] as string"
+      >
+        <div v-for="tab in tabs" :key="tab.value" class="lm-tabs__item">
+          <TabsTrigger :value="tab.value" class="lm-tabs__tab">
+            <slot name="tab" :tab="tab" :active="tab.value === model">
+              <component :is="tab.icon" v-if="tab.icon" :size="14" :stroke-width="1.75" />
+              {{ tab.label }}
+            </slot>
+          </TabsTrigger>
+          <button
+            v-if="closable"
+            type="button"
+            class="lm-tabs__close"
+            :aria-label="`Close ${tab.label}`"
+            @pointerdown.stop
+            @click.stop="$emit('close', tab.value)"
+          >
+            <X :size="14" :stroke-width="1.75" />
+          </button>
+        </div>
+      </TabsList>
+      <div v-if="$slots.end" class="lm-tabs__end"><slot name="end" /></div>
+    </div>
+    <!-- Without a slot per tab the caller renders the content itself -->
+    <template v-for="tab in tabs" :key="tab.value">
+      <TabsContent
+        v-if="$slots[tab.value]"
+        :value="tab.value"
+        :force-mount="keepMounted || undefined"
+        class="lm-tabs__panel"
+      >
+        <slot :name="tab.value" />
+      </TabsContent>
+    </template>
   </TabsRoot>
 </template>
 
@@ -53,13 +78,26 @@ const model = defineModel<string>({ required: true });
     flex-direction: column;
     min-height: 0;
   }
-  .lm-tabs__list {
+  .lm-tabs__bar {
     display: flex;
+    align-items: center;
     flex: none;
-    overflow-x: auto;
     background: var(--panel);
     border-bottom: 1px solid var(--border);
+  }
+  .lm-tabs__list {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
     scrollbar-width: none;
+  }
+  .lm-tabs__end {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    padding: 0 10px;
   }
   .lm-tabs__list::-webkit-scrollbar {
     display: none;
@@ -113,6 +151,24 @@ const model = defineModel<string>({ required: true });
     outline: 2px solid var(--accent);
     outline-offset: -2px;
   }
+  .lm-tabs--underline .lm-tabs__bar,
+  .lm-tabs--underline .lm-tabs__item,
+  .lm-tabs--underline .lm-tabs__item:has(.lm-tabs__tab[data-state='active']),
+  .lm-tabs--underline .lm-tabs__tab,
+  .lm-tabs--underline .lm-tabs__tab[data-state='active'] {
+    background: none;
+    border-right: 0;
+  }
+  .lm-tabs--underline .lm-tabs__tab[data-state='active'] {
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+  .lm-tabs__tab {
+    min-height: var(--lm-touch-target);
+  }
+  .lm-tabs__close {
+    min-width: var(--lm-touch-target);
+    min-height: var(--lm-touch-target);
+  }
   .lm-tabs__panel {
     flex: 1;
     min-height: 0;
@@ -121,15 +177,14 @@ const model = defineModel<string>({ required: true });
     display: none;
   }
   @media (max-width: 767.98px) {
-    .lm-tabs__tab {
-      min-height: 44px;
-    }
     .lm-tabs__close {
-      min-width: 44px;
-      min-height: 44px;
       justify-content: center;
       padding: 0;
     }
+  }
+  .lm-touch .lm-tabs__close {
+    justify-content: center;
+    padding: 0;
   }
 }
 </style>

@@ -17,10 +17,11 @@ import { RadioGroup } from '@asterism-dev/lumen';
 | Prop | Type | Default | Notes |
 | --- | --- | --- | --- |
 | `v-model` | `string` | required |  |
-| `options` | `RadioOption[]` | required | `{ value, label, disabled? }` |
+| `options` | `RadioOption[]` | required | `{ value, label, disabled?, title? }` |
+| `variant` | `radio` \| `custom` | `radio` | `custom` drops the radio dot; the `option` slot is the whole item and `label` its accessible name. |
 | `disabled` | `boolean` | `false` |  |
 | `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 
 ## Notes
 
-The `option` slot (`{ option }`) replaces the label text, for example with a color swatch.
+The `option` slot (`{ option, checked }`) replaces the label text. With `variant="custom"` it renders inside the radio itself, for example a color swatch; the checked one gets an accent ring.

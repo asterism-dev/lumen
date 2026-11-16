@@ -2,14 +2,20 @@
 withDefaults(
   defineProps<{
     tone?: 'default' | 'muted' | 'success' | 'warning' | 'danger' | 'merged';
+    variant?: 'plain' | 'outline';
     as?: string;
   }>(),
-  { tone: 'default', as: 'span' },
+  { tone: 'default', variant: 'plain', as: 'span' },
 );
 </script>
 
 <template>
-  <component :is="as" class="lm-badge" :class="`lm-badge--${tone}`"><slot /></component>
+  <component
+    :is="as"
+    class="lm-badge"
+    :class="[`lm-badge--${tone}`, { 'lm-badge--outline': variant === 'outline' }]"
+    ><slot
+  /></component>
 </template>
 
 <style>
@@ -20,6 +26,12 @@ withDefaults(
     font-weight: 600;
     text-decoration: none;
     color: inherit;
+  }
+  .lm-badge--outline {
+    font-size: 11px;
+    padding: 0 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
   }
   .lm-badge--muted {
     color: var(--muted);

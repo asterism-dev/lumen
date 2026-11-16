@@ -57,16 +57,14 @@ const control = useFieldControl(
   .lm-select:disabled {
     opacity: 0.5;
   }
-  @media (max-width: 767.98px) {
-    .lm-text-input,
-    .lm-textarea,
-    .lm-select {
-      font-size: 16px;
-    }
-    .lm-text-input,
-    .lm-select {
-      min-height: 44px;
-    }
+  .lm-text-input,
+  .lm-textarea,
+  .lm-select {
+    font-size: var(--lm-input-font-size);
+  }
+  .lm-text-input,
+  .lm-select {
+    min-height: var(--lm-touch-target);
   }
 }
 </style>

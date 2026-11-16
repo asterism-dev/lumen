@@ -25,3 +25,17 @@ describe('Select', () => {
     expect(wrapper.find('select').attributes('aria-label')).toBe('Count');
   });
 });
+
+describe('Select nullable', () => {
+  it('shows the placeholder for null and emits picked values', async () => {
+    const wrapper = mount(Select, {
+      props: { modelValue: null as number | null, options, placeholder: 'Pick one' },
+    });
+    const first = wrapper.findAll('option')[0];
+    expect(first.text()).toBe('Pick one');
+    expect(first.attributes('disabled')).toBeDefined();
+    expect((wrapper.find('select').element as HTMLSelectElement).selectedIndex).toBe(0);
+    await wrapper.find('select').setValue('1');
+    expect(wrapper.emitted('update:modelValue')).toEqual([[1]]);
+  });
+});

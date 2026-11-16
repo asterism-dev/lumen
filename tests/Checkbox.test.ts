@@ -39,3 +39,21 @@ describe('Switch', () => {
     expect(wrapper.emitted('update:modelValue')).toEqual([[false]]);
   });
 });
+
+describe('Checkbox and Switch attrs', () => {
+  it('puts class and style on the label, other attrs on the control', () => {
+    for (const component of [Checkbox, Switch]) {
+      const wrapper = mount(component, {
+        props: { modelValue: false },
+        attrs: { class: 'spaced', style: 'margin-top: 4px', 'aria-label': 'Pick' },
+      });
+      expect(wrapper.element.tagName).toBe('LABEL');
+      expect(wrapper.classes()).toContain('spaced');
+      expect(wrapper.attributes('style')).toContain('margin-top: 4px');
+      const control = wrapper.find('button');
+      expect(control.classes()).not.toContain('spaced');
+      expect(control.attributes('style')).toBeUndefined();
+      expect(control.attributes('aria-label')).toBe('Pick');
+    }
+  });
+});
