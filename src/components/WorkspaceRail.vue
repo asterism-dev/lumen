@@ -12,7 +12,10 @@ export interface WorkspaceItem {
   waiting?: number;
 }
 
-defineProps<{ workspaces: WorkspaceItem[]; active: string | null }>();
+const props = defineProps<{ workspaces: WorkspaceItem[]; active: string | null }>();
+const tileLabel = (w: WorkspaceItem) =>
+  props.active !== w.id && w.waiting ? `${w.name}, ${w.waiting} waiting` : w.name;
+
 defineEmits<{
   select: [id: string];
   add: [];
@@ -27,11 +30,11 @@ defineEmits<{
       v-for="w in workspaces"
       :key="w.id"
       type="button"
-      class="lm-rail__tile"
+      class="lm-button lm-rail__tile"
       :class="{ 'lm-rail__tile--active': active === w.id, 'lm-rail__tile--colored': !!w.color }"
       :style="w.color ? { '--tile': `var(--ws-${w.color})` } : undefined"
-      :title="active !== w.id && w.waiting ? `${w.name}, ${w.waiting} waiting` : w.name"
-      :aria-label="active !== w.id && w.waiting ? `${w.name}, ${w.waiting} waiting` : w.name"
+      :title="tileLabel(w)"
+      :aria-label="tileLabel(w)"
       :aria-pressed="active === w.id"
       @click="$emit('select', w.id)"
       @contextmenu="$emit('contextmenu', w.id, $event)"
@@ -41,7 +44,7 @@ defineEmits<{
     </button>
     <button
       type="button"
-      class="lm-rail__tile lm-rail__tile--add"
+      class="lm-button lm-rail__tile lm-rail__tile--add"
       title="New workspace"
       aria-label="New workspace"
       @click="$emit('add')"
@@ -64,36 +67,28 @@ defineEmits<{
     border-right: 1px solid var(--border);
     overflow-y: auto;
   }
-  .lm-rail__tile {
+  .lm-rail .lm-rail__tile {
     position: relative;
     width: 32px;
     height: 32px;
     padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font: inherit;
     font-weight: 600;
     font-size: 12px;
-    color: var(--text);
-    background: var(--panel);
-    border: 1px solid var(--border);
     border-radius: 8px;
-    cursor: pointer;
   }
   .lm-rail__tile:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: -2px;
   }
-  .lm-rail__tile--active {
+  .lm-rail .lm-rail__tile.lm-rail__tile--active:not(:disabled) {
     background: var(--select);
     border-color: var(--muted);
   }
-  .lm-rail__tile--colored {
+  .lm-rail .lm-rail__tile.lm-rail__tile--colored {
     color: var(--tile);
     border-color: var(--tile);
   }
-  .lm-rail__tile--colored.lm-rail__tile--active {
+  .lm-rail .lm-rail__tile.lm-rail__tile--colored.lm-rail__tile--active:not(:disabled) {
     background: var(--tile);
     color: var(--bg);
   }
@@ -121,7 +116,7 @@ defineEmits<{
       overflow-y: visible;
       overflow-x: auto;
     }
-    .lm-rail__tile {
+    .lm-rail .lm-rail__tile {
       flex: none;
       width: 44px;
       height: 44px;
