@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "Vue 3 component library",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.19"
+  },
   "type": "module",
   "files": [
     "dist"

@@ -32,6 +32,10 @@ withDefaults(
     width: 100%;
     box-sizing: border-box;
   }
+  .lm-text-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
   .lm-text-input:disabled {
     opacity: 0.5;
   }

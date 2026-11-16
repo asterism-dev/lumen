@@ -180,7 +180,7 @@ const forwardedSlots = () =>
     outline: 2px solid var(--accent);
     outline-offset: -2px;
   }
-  .lm-data-table__column-filter {
+  .lm-data-table .lm-data-table__column-filter {
     display: block;
     width: 100%;
     margin-top: 4px;

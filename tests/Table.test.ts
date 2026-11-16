@@ -53,6 +53,11 @@ describe('Table', () => {
     expect(wrapper.find('tbody td').attributes('colspan')).toBe('2');
   });
 
+  it('renders no empty row without an empty slot', () => {
+    wrapper = mount(Table, { props: { columns, rows: [], rowKey: 'id' } });
+    expect(wrapper.findAll('tbody tr')).toHaveLength(0);
+  });
+
   it('renders null and undefined values as empty cells', () => {
     wrapper = mount(Table, { props: { columns, rows, rowKey: 'id' } });
     const trs = wrapper.findAll('tbody tr');

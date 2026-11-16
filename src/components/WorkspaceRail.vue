@@ -92,7 +92,7 @@ defineEmits<{
     background: var(--tile);
     color: var(--bg);
   }
-  .lm-rail__tile--add {
+  .lm-rail .lm-rail__tile--add {
     margin-top: auto;
     color: var(--muted);
   }
@@ -110,7 +110,8 @@ defineEmits<{
     .lm-rail {
       width: auto;
       flex-direction: row;
-      padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      padding: 8px max(8px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom))
+        max(8px, env(safe-area-inset-left));
       border-right: 0;
       border-top: 1px solid var(--border);
       overflow-y: visible;
@@ -121,7 +122,7 @@ defineEmits<{
       width: 44px;
       height: 44px;
     }
-    .lm-rail__tile--add {
+    .lm-rail .lm-rail__tile--add {
       margin-top: 0;
       margin-left: auto;
     }

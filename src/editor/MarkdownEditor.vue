@@ -63,7 +63,7 @@ defineEmits<{ 'open-link': [href: string] }>();
     flex: 1;
     min-height: 0;
   }
-  .lm-md__pane {
+  .lm-md .lm-md__pane {
     flex: 1;
     min-height: 0;
     overflow: auto;

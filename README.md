@@ -10,6 +10,8 @@ npm i github:asterism-dev/lumen#v0.1.0
 
 The `prepare` script builds the package on install. `vue ^3.5` is a required peer. The core depends only on `reka-ui` and `@lucide/vue`; everything else is an optional peer you install per entry.
 
+Installing with `--ignore-scripts` skips `prepare`, so there is no `dist` and the entries will not resolve. pnpm may require allowing the git dependency's build scripts (`pnpm.onlyBuiltDependencies` or `pnpm approve-builds`).
+
 ## Entries
 
 | Entry                          | Exports                                                                                                        | Peers to install                                                                                                               | CSS                         |
@@ -49,7 +51,8 @@ At `max-width: 767.98px` (also exposed as `useIsMobile()`):
 
 - Clickable elements are at least 44px tall.
 - Inputs and editors use `font-size: 16px`.
-- Edges respect `env(safe-area-inset-*)`.
+- `WorkspaceRail` respects `env(safe-area-inset-*)` on its left, right and bottom edges.
+- Tab-strip icons are 14px to match Asterism's tabs.
 - `WorkspaceRail` moves to the bottom.
 - `Tabs` scroll horizontally.
 - `MarkdownEditor` split stacks vertically.

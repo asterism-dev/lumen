@@ -68,6 +68,7 @@ describe('CodeEditor', () => {
     const w = mountEditor();
     const v = view(w);
     const destroy = vi.spyOn(v, 'destroy');
+    mounted.splice(mounted.indexOf(w), 1);
     w.unmount();
     expect(destroy).toHaveBeenCalled();
   });

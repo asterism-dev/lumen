@@ -7,12 +7,14 @@ import {
   EditorView,
   highlightActiveLine,
   highlightActiveLineGutter,
+  keymap,
   lineNumbers as lineNumberGutter,
   rectangularSelection,
 } from '@codemirror/view';
 import {
   bracketMatching,
   foldGutter,
+  foldKeymap,
   indentOnInput,
   syntaxHighlighting,
 } from '@codemirror/language';
@@ -34,7 +36,9 @@ const external = Annotation.define<boolean>();
 
 const readonlyExtension = () => EditorState.readOnly.of(!!props.readonly);
 const lineNumbersExtension = () =>
-  props.lineNumbers ? [lineNumberGutter(), highlightActiveLineGutter(), foldGutter()] : [];
+  props.lineNumbers
+    ? [lineNumberGutter(), highlightActiveLineGutter(), foldGutter(), keymap.of(foldKeymap)]
+    : [];
 
 onMounted(() => {
   view.value = new EditorView({
@@ -102,6 +106,9 @@ defineExpose({ view: () => view.value });
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: var(--radius);
+  }
+  .lm-code-editor:focus-within {
+    border-color: var(--accent);
   }
   .lm-code-editor .cm-editor {
     height: 100%;

@@ -32,7 +32,7 @@ defineSlots<{
         </tr>
       </thead>
       <tbody>
-        <tr v-if="rows.length === 0">
+        <tr v-if="rows.length === 0 && $slots.empty">
           <td class="lm-table__empty" :colspan="columns.length">
             <slot name="empty" />
           </td>

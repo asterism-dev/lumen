@@ -46,6 +46,10 @@ withDefaults(
     opacity: 0.5;
     cursor: default;
   }
+  .lm-button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
   .lm-button--accent {
     background: var(--accent);
     color: var(--on-accent);
