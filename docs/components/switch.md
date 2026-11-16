@@ -1,0 +1,24 @@
+# Switch
+
+On/off toggle for settings, built on reka-ui.
+
+```ts
+import { Switch } from '@asterism-dev/lumen';
+```
+
+<div class="lumen-preview" data-example="SwitchExample"></div>
+
+```html
+--8<-- "examples/SwitchExample.vue"
+```
+
+## Props
+
+| Prop | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `v-model` | `boolean` | required |  |
+| `disabled` | `boolean` | `false` |  |
+
+## Notes
+
+Use a switch for settings that apply immediately, and a [Checkbox](checkbox.md) for picking items.

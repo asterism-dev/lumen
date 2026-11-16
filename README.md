@@ -80,9 +80,9 @@ At `max-width: 767.98px` (also exposed as `useIsMobile()`):
 
 lumen sanitizes Markdown and blocks link navigation, but in a Tauri app you should still set a CSP (`img-src` etc.) and a navigation guard (Tauri `on_navigation`) as defense-in-depth. Remote images and the native context-menu "Open Link" are outside lumen's control.
 
-## Demo
+## Docs
 
-`npm run demo` starts a page with all components.
+`npm run docs:serve` builds the live examples and serves the docs at <http://localhost:8000>. `npm run docs:build` writes the static site to `site/`. Docs are built with [Zensical](https://zensical.org) through `uvx`, so you need [uv](https://docs.astral.sh/uv/). Pushes to `main` deploy them to GitHub Pages.
 
 ## Release
 

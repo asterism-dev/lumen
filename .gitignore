@@ -1,3 +1,6 @@
 node_modules/
 dist/
 coverage/
+site/
+docs/assets/lumen/
+.cache/
