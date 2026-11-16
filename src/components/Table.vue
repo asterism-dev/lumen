@@ -6,7 +6,11 @@ defineProps<{
   rows: Row[];
   rowKey: keyof Row & string;
   sortState?: Record<string, 'ascending' | 'descending'>;
+  hideHeader?: boolean;
+  rowClickable?: (row: Row) => boolean;
 }>();
+
+defineEmits<{ 'row-click': [row: Row] }>();
 
 defineSlots<{
   [name: `header-${string}`]: (props: { column: TableColumn }) => unknown;
@@ -18,7 +22,7 @@ defineSlots<{
 <template>
   <div class="lm-table-wrap">
     <table class="lm-table">
-      <thead>
+      <thead v-if="!hideHeader">
         <tr>
           <th
             v-for="column in columns"
@@ -37,7 +41,21 @@ defineSlots<{
             <slot name="empty" />
           </td>
         </tr>
-        <tr v-for="row in rows" :key="String(row[rowKey])" class="lm-table__row">
+        <tr
+          v-for="row in rows"
+          :key="String(row[rowKey])"
+          class="lm-table__row"
+          v-bind="
+            rowClickable?.(row)
+              ? {
+                  class: 'lm-table__row--clickable',
+                  tabindex: 0,
+                  onClick: () => $emit('row-click', row),
+                  onKeydown: (e: KeyboardEvent) => e.key === 'Enter' && $emit('row-click', row),
+                }
+              : {}
+          "
+        >
           <td
             v-for="column in columns"
             :key="column.key"
@@ -85,6 +103,13 @@ defineSlots<{
   }
   .lm-table__row:hover {
     background: var(--select);
+  }
+  .lm-table__row--clickable {
+    cursor: pointer;
+  }
+  .lm-table__row--clickable:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
   }
   .lm-table__empty {
     padding: 16px 10px;
