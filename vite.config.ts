@@ -2,9 +2,12 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 
+const srcRoot = resolve(import.meta.dirname, 'src') + '/';
+
 const ownerOf = (id: string) => {
-  const dir = /\/src\/([^/]+)\//.exec(id)?.[1];
-  return dir && ['table', 'editor', 'markdown', 'dock'].includes(dir) ? dir : 'index';
+  if (!id.startsWith(srcRoot)) return undefined;
+  const dir = id.slice(srcRoot.length).split('/')[0];
+  return ['table', 'editor', 'markdown', 'dock'].includes(dir) ? dir : 'index';
 };
 
 // Shared-chunk CSS is emitted as an orphan file; fold it into the CSS of the entry owning its modules.
@@ -15,7 +18,7 @@ const routeSharedCss: Plugin = {
     for (const chunk of Object.values(bundle)) {
       if (chunk.type !== 'chunk' || chunk.isEntry) continue;
       const owners = new Set(
-        chunk.moduleIds.filter((id) => !id.includes('node_modules')).map(ownerOf),
+        chunk.moduleIds.map(ownerOf).filter((owner): owner is string => !!owner),
       );
       for (const cssName of chunk.viteMetadata?.importedCss ?? []) {
         const css = bundle[cssName];
@@ -48,11 +51,11 @@ export default defineConfig({
     lib: {
       formats: ['es'],
       entry: {
-        index: resolve(__dirname, 'src/index.ts'),
-        table: resolve(__dirname, 'src/table/index.ts'),
-        editor: resolve(__dirname, 'src/editor/index.ts'),
-        markdown: resolve(__dirname, 'src/markdown/index.ts'),
-        dock: resolve(__dirname, 'src/dock/index.ts'),
+        index: resolve(import.meta.dirname, 'src/index.ts'),
+        table: resolve(import.meta.dirname, 'src/table/index.ts'),
+        editor: resolve(import.meta.dirname, 'src/editor/index.ts'),
+        markdown: resolve(import.meta.dirname, 'src/markdown/index.ts'),
+        dock: resolve(import.meta.dirname, 'src/dock/index.ts'),
       },
     },
     rollupOptions: {

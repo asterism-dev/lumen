@@ -11,7 +11,7 @@ const forbidden = [
   'dompurify',
   'highlight.js',
 ];
-const importPattern = /(?:import|export)\s*(?:[^'"]*?\sfrom\s*)?['"](\.[^'"]+)['"]/g;
+const importPattern = /(?:import|export)\s*\(?\s*(?:[^'"]*?\sfrom\s*)?['"](\.[^'"]+)['"]/g;
 
 const files = [resolve('dist/index.css')];
 const queue = [resolve('dist/index.js')];
