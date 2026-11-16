@@ -45,7 +45,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "demo": "vite demo --config vite.config.ts",
+    "docs:examples": "vite build --config docs/vite.config.ts",
+    "docs:build": "npm run docs:examples && uvx zensical build --clean",
+    "docs:serve": "npm run docs:examples && uvx zensical serve",
     "check:isolation": "node scripts/check-isolation.mjs"
   },
   "dependencies": {

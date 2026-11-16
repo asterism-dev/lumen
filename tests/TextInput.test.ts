@@ -16,4 +16,9 @@ describe('TextInput', () => {
     });
     expect(wrapper.find('input').attributes('aria-label')).toBe('Name');
   });
+
+  it('supports password fields', () => {
+    const wrapper = mount(TextInput, { props: { modelValue: '', type: 'password' } });
+    expect(wrapper.find('input').attributes('type')).toBe('password');
+  });
 });

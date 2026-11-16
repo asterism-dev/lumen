@@ -8,8 +8,12 @@ describe('Button', () => {
     expect(mount(Button).attributes('type')).toBe('button');
   });
 
-  it.each(['accent', 'danger'] as const)('adds lm-button--%s', (variant) => {
+  it.each(['accent', 'danger', 'ghost'] as const)('adds lm-button--%s', (variant) => {
     expect(mount(Button, { props: { variant } }).classes()).toContain(`lm-button--${variant}`);
+  });
+
+  it('adds lm-button--sm for the compact size', () => {
+    expect(mount(Button, { props: { size: 'sm' } }).classes()).toContain('lm-button--sm');
   });
 
   it('marks icon-only buttons', () => {

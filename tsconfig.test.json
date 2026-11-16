@@ -1,5 +1,12 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": { "rootDir": ".", "types": ["vite/client", "node"] },
-  "include": ["src/**/*.ts", "src/**/*.vue", "tests/**/*.ts"]
+  "compilerOptions": {
+    "rootDir": ".",
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@asterism-dev/lumen": ["./src/index.ts"],
+      "@asterism-dev/lumen/*": ["./src/*/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue", "tests/**/*.ts", "docs/**/*.ts", "docs/**/*.vue"]
 }

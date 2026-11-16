@@ -2,5 +2,8 @@ dist/
 coverage/
 package-lock.json
 .superpowers/
-docs/
+docs/**/*.md
+docs/assets/
+site/
 CHANGELOG.md
+.cache/

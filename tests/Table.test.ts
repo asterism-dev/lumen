@@ -74,4 +74,28 @@ describe('Table', () => {
     expect(ths[1].attributes('aria-sort')).toBe('descending');
     expect(ths[1].classes()).toContain('lm-table__th--right');
   });
+
+  it('hides the header on request', () => {
+    wrapper = mount(Table, { props: { columns, rows, rowKey: 'id', hideHeader: true } });
+    expect(wrapper.find('thead').exists()).toBe(false);
+  });
+
+  it('emits row-click only for clickable rows, also via Enter', async () => {
+    wrapper = mount(Table, {
+      props: {
+        columns,
+        rows,
+        rowKey: 'id',
+        rowClickable: (row: Record<string, unknown>) => row.id !== 'b',
+      },
+    });
+    const trs = wrapper.findAll('tbody tr');
+    expect(trs[0].classes()).toContain('lm-table__row');
+    expect(trs[0].classes()).toContain('lm-table__row--clickable');
+    expect(trs[1].attributes('tabindex')).toBeUndefined();
+    await trs[0].trigger('click');
+    await trs[1].trigger('click');
+    await trs[2].trigger('keydown', { key: 'Enter' });
+    expect(wrapper.emitted('row-click')).toEqual([[rows[0]], [rows[2]]]);
+  });
 });

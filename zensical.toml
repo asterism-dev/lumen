@@ -1,0 +1,81 @@
+[project]
+site_name = "lumen"
+site_description = "Vue 3 component library in the Asterism look"
+repo_url = "https://github.com/asterism-dev/lumen"
+extra_css = ["assets/lumen/islands.css"]
+extra_javascript = ["assets/lumen/islands.js"]
+nav = [
+  { "Getting started" = "index.md" },
+  { "Forms" = [
+    "components/field.md",
+    "components/button.md",
+    "components/text-input.md",
+    "components/number-input.md",
+    "components/textarea.md",
+    "components/select.md",
+    "components/checkbox.md",
+    "components/switch.md",
+    "components/radio-group.md",
+    "components/segmented-control.md",
+    "components/combobox.md",
+  ] },
+  { "Overlays" = [
+    "components/dialog.md",
+    "components/menu.md",
+    "components/context-menu.md",
+    "components/popover.md",
+    "components/tooltip.md",
+  ] },
+  { "Display" = [
+    "components/badge.md",
+    "components/kbd.md",
+    "components/status-dot.md",
+    "components/table.md",
+  ] },
+  { "Navigation" = [
+    "components/tabs.md",
+    "components/list.md",
+    "components/workspace-rail.md",
+  ] },
+  { "Optional entries" = [
+    "components/data-table.md",
+    "components/code-editor.md",
+    "components/markdown-editor.md",
+    "components/markdown-view.md",
+    "components/dock.md",
+  ] },
+]
+
+[project.theme]
+language = "en"
+features = [
+  "content.code.copy",
+  "navigation.footer",
+  "navigation.sections",
+  "navigation.top",
+  "search.highlight",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+tables = {}
+toc.permalink = true
+pymdownx.highlight = {}
+pymdownx.inlinehilite = {}
+pymdownx.superfences = {}
+pymdownx.snippets.base_path = ["docs"]
+pymdownx.snippets.check_paths = true
