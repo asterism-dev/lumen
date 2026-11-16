@@ -32,4 +32,25 @@
   .lm-dock .dv-tab {
     font: var(--font-ui);
   }
+  .lm-dock-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    padding: 0 4px 0 10px;
+  }
+  .lm-dock-tab__close {
+    display: inline-flex;
+    padding: 0 3px;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 4px;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+  .lm-dock-tab__close:hover {
+    opacity: 1;
+    background: var(--border);
+  }
 }

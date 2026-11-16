@@ -1,16 +1,13 @@
 <script lang="ts">
-import type { InjectionKey, Slots } from 'vue';
+import { defineComponent, inject, type InjectionKey, type Slots } from 'vue';
 
 export const dockSlotsKey: InjectionKey<Slots> = Symbol('lm-dock-slots');
+
+export default defineComponent({
+  props: { params: { type: Object, required: true } },
+  setup(props) {
+    const slots = inject(dockSlotsKey, {});
+    return () => slots[(props.params as { params: { id: string } }).params.id]?.();
+  },
+});
 </script>
-
-<script setup lang="ts">
-import { inject } from 'vue';
-
-const props = defineProps<{ params: { params: { id: string } } }>();
-const slots = inject(dockSlotsKey, {});
-</script>
-
-<template>
-  <component :is="() => slots[props.params.params.id]?.()" />
-</template>
