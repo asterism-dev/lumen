@@ -26,6 +26,17 @@ describe('renderMarkdown', () => {
     );
     expect(html).not.toMatch(/<(form|button|area|map)/);
   });
+  it('removes style elements and attributes', () => {
+    const html = renderMarkdown(
+      '<style>body{display:none}</style><div style="position:fixed;inset:0">x</div>',
+    );
+    expect(html).not.toMatch(/<style|style=/);
+  });
+  it('prefixes ids and names to prevent clobbering', () => {
+    const html = renderMarkdown('<div id="app">x</div>');
+    expect(html).not.toContain('id="app"');
+    expect(html).toContain('id="user-content-app"');
+  });
   it('removes mathml', () =>
     expect(
       renderMarkdown('<math><mrow href="https://evil"><mi>x</mi></mrow></math>'),
