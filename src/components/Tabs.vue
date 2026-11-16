@@ -64,7 +64,10 @@ const model = defineModel<string>({ required: true });
   .lm-tabs__tab[data-state='active'] {
     color: var(--text);
     background: var(--bg);
-    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+  .lm-tabs__tab:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
   }
   .lm-tabs__panel {
     flex: 1;
