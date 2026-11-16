@@ -1,0 +1,36 @@
+@layer lumen {
+  .lm-markdown .hljs-keyword,
+  .lm-markdown .hljs-literal,
+  .lm-markdown .hljs-selector-tag {
+    color: var(--hl-keyword);
+  }
+  .lm-markdown .hljs-string,
+  .lm-markdown .hljs-regexp {
+    color: var(--hl-string);
+  }
+  .lm-markdown .hljs-comment,
+  .lm-markdown .hljs-quote,
+  .lm-markdown .hljs-meta {
+    color: var(--hl-comment);
+    font-style: italic;
+  }
+  .lm-markdown .hljs-number,
+  .lm-markdown .hljs-symbol {
+    color: var(--hl-number);
+  }
+  .lm-markdown .hljs-title,
+  .lm-markdown .hljs-section {
+    color: var(--hl-title);
+  }
+  .lm-markdown .hljs-type,
+  .lm-markdown .hljs-built_in {
+    color: var(--hl-type);
+  }
+  .lm-markdown .hljs-attr,
+  .lm-markdown .hljs-attribute,
+  .lm-markdown .hljs-variable,
+  .lm-markdown .hljs-tag,
+  .lm-markdown .hljs-name {
+    color: var(--hl-attr);
+  }
+}
