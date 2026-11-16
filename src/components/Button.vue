@@ -39,7 +39,7 @@ withDefaults(
     padding: 3px 9px;
     cursor: pointer;
   }
-  .lm-button:hover {
+  .lm-button:hover:not(:disabled) {
     background: var(--select);
   }
   .lm-button:disabled {
@@ -50,6 +50,9 @@ withDefaults(
     background: var(--accent);
     color: var(--on-accent);
     border-color: var(--accent);
+  }
+  .lm-button--accent:hover:not(:disabled) {
+    background: var(--accent);
   }
   .lm-button--danger {
     color: var(--danger);
