@@ -42,6 +42,26 @@ describe('Tabs', () => {
     expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['b']);
   });
 
+  it('emits close without activating the tab when closable', async () => {
+    wrapper = mount(Tabs, {
+      props: { tabs, modelValue: 'a', closable: true },
+      slots: { a: 'panel A', b: 'panel B', c: 'panel C' },
+      attachTo: document.body,
+    });
+    const close = wrapper.find('[aria-label="Close Beta"]');
+    expect(close.attributes('type')).toBe('button');
+    await close.trigger('pointerdown');
+    await close.trigger('mousedown', { button: 0 });
+    await close.trigger('click');
+    expect(wrapper.emitted('close')).toEqual([['b']]);
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('renders no close buttons by default', () => {
+    wrapper = make();
+    expect(wrapper.find('.lm-tabs__close').exists()).toBe(false);
+  });
+
   it('keeps inactive panels mounted and hidden with keepMounted', async () => {
     let mounts = 0;
     const Probe = defineComponent({

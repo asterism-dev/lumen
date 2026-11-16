@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { X } from '@lucide/vue';
 import type { Component } from 'vue';
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from 'reka-ui';
 
@@ -8,17 +9,30 @@ export interface TabItem {
   icon?: Component;
 }
 
-defineProps<{ tabs: TabItem[]; keepMounted?: boolean }>();
+defineProps<{ tabs: TabItem[]; keepMounted?: boolean; closable?: boolean }>();
+defineEmits<{ close: [value: string] }>();
 const model = defineModel<string>({ required: true });
 </script>
 
 <template>
   <TabsRoot v-model="model" class="lm-tabs">
     <TabsList class="lm-tabs__list">
-      <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value" class="lm-tabs__tab">
-        <component :is="tab.icon" v-if="tab.icon" :size="14" :stroke-width="1.75" />
-        {{ tab.label }}
-      </TabsTrigger>
+      <div v-for="tab in tabs" :key="tab.value" class="lm-tabs__item">
+        <TabsTrigger :value="tab.value" class="lm-tabs__tab">
+          <component :is="tab.icon" v-if="tab.icon" :size="14" :stroke-width="1.75" />
+          {{ tab.label }}
+        </TabsTrigger>
+        <button
+          v-if="closable"
+          type="button"
+          class="lm-tabs__close"
+          :aria-label="`Close ${tab.label}`"
+          @pointerdown.stop
+          @click.stop="$emit('close', tab.value)"
+        >
+          <X :size="14" :stroke-width="1.75" />
+        </button>
+      </div>
     </TabsList>
     <TabsContent
       v-for="tab in tabs"
@@ -50,6 +64,15 @@ const model = defineModel<string>({ required: true });
   .lm-tabs__list::-webkit-scrollbar {
     display: none;
   }
+  .lm-tabs__item {
+    display: flex;
+    flex: none;
+    border-right: 1px solid var(--border);
+    background: var(--panel);
+  }
+  .lm-tabs__item:has(.lm-tabs__tab[data-state='active']) {
+    background: var(--bg);
+  }
   .lm-tabs__tab {
     display: inline-flex;
     flex: none;
@@ -60,9 +83,24 @@ const model = defineModel<string>({ required: true });
     color: var(--muted);
     background: var(--panel);
     border: 0;
-    border-right: 1px solid var(--border);
     padding: 6px 12px;
     cursor: pointer;
+  }
+  .lm-tabs__close {
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    padding: 0 8px 0 0;
+    cursor: pointer;
+  }
+  .lm-tabs__close:hover {
+    color: var(--text);
+  }
+  .lm-tabs__close:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
   }
   .lm-tabs__tab svg {
     flex: none;
@@ -85,6 +123,12 @@ const model = defineModel<string>({ required: true });
   @media (max-width: 767.98px) {
     .lm-tabs__tab {
       min-height: 44px;
+    }
+    .lm-tabs__close {
+      min-width: 44px;
+      min-height: 44px;
+      justify-content: center;
+      padding: 0;
     }
   }
 }

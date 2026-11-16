@@ -81,7 +81,15 @@ watch(active, (id) => {
 </script>
 
 <template>
-  <Tabs v-if="isMobile" v-model="tabValue" :tabs="tabs" keep-mounted class="lm-dock">
+  <Tabs
+    v-if="isMobile"
+    v-model="tabValue"
+    :tabs="tabs"
+    keep-mounted
+    closable
+    class="lm-dock"
+    @close="emit('close', $event)"
+  >
     <template v-for="panel in panels" :key="panel.id" #[panel.id]>
       <slot :name="panel.id" />
     </template>

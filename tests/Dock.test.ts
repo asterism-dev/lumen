@@ -45,6 +45,13 @@ describe('Dock on mobile', () => {
     expect(wrapper.emitted('update:active')?.[0]).toEqual(['two']);
   });
 
+  it('emits close from the tab close button', async () => {
+    stubMobile();
+    mountDock({ active: 'one' });
+    await wrapper.find('[aria-label="Close Two"]').trigger('click');
+    expect(wrapper.emitted('close')).toEqual([['two']]);
+  });
+
   it('keeps inactive panels mounted', () => {
     stubMobile();
     mountDock({ active: 'one' });
