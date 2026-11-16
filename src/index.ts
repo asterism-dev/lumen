@@ -11,3 +11,5 @@ export { default as List } from './components/List.vue';
 export { default as ListItem } from './components/ListItem.vue';
 export { default as Table } from './components/Table.vue';
 export type { TableColumn } from './components/Table.vue';
+export { default as WorkspaceRail } from './components/WorkspaceRail.vue';
+export type { WorkspaceItem, WorkspaceColor } from './components/WorkspaceRail.vue';
