@@ -1,7 +1,7 @@
 import type { EditorView } from '@codemirror/view';
 import { markdown } from '@codemirror/lang-markdown';
 import { mount, type VueWrapper } from '@vue/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import CodeEditor from '../src/editor/CodeEditor.vue';
 
 const mounted: VueWrapper[] = [];
@@ -58,7 +58,17 @@ describe('CodeEditor', () => {
   it('toggles line numbers', async () => {
     const w = mountEditor();
     expect(w.find('.cm-lineNumbers').exists()).toBe(true);
+    expect(w.find('.cm-gutters').exists()).toBe(true);
     await w.setProps({ lineNumbers: false });
     expect(w.find('.cm-lineNumbers').exists()).toBe(false);
+    expect(w.find('.cm-gutters').exists()).toBe(false);
+  });
+
+  it('destroys the view on unmount', () => {
+    const w = mountEditor();
+    const v = view(w);
+    const destroy = vi.spyOn(v, 'destroy');
+    w.unmount();
+    expect(destroy).toHaveBeenCalled();
   });
 });

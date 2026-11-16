@@ -1,8 +1,21 @@
 <script setup lang="ts">
-import { basicSetup } from 'codemirror';
+import { minimalSetup } from 'codemirror';
 import { Annotation, Compartment, EditorState, type Extension } from '@codemirror/state';
-import { EditorView, lineNumbers as gutter } from '@codemirror/view';
-import { syntaxHighlighting } from '@codemirror/language';
+import {
+  crosshairCursor,
+  dropCursor,
+  EditorView,
+  highlightActiveLine,
+  highlightActiveLineGutter,
+  lineNumbers as lineNumberGutter,
+  rectangularSelection,
+} from '@codemirror/view';
+import {
+  bracketMatching,
+  foldGutter,
+  indentOnInput,
+  syntaxHighlighting,
+} from '@codemirror/language';
 import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import { lumenEditorTheme, lumenHighlightStyle } from './theme';
 
@@ -20,7 +33,8 @@ const lineNumbersSlot = new Compartment();
 const external = Annotation.define<boolean>();
 
 const readonlyExtension = () => EditorState.readOnly.of(!!props.readonly);
-const lineNumbersExtension = () => (props.lineNumbers ? gutter() : []);
+const lineNumbersExtension = () =>
+  props.lineNumbers ? [lineNumberGutter(), highlightActiveLineGutter(), foldGutter()] : [];
 
 onMounted(() => {
   view.value = new EditorView({
@@ -28,8 +42,14 @@ onMounted(() => {
     state: EditorState.create({
       doc: model.value,
       extensions: [
-        // basicSetup's first entry is lineNumbers(); it is toggled via lineNumbersSlot instead
-        (basicSetup as Extension[]).slice(1),
+        minimalSetup,
+        EditorState.allowMultipleSelections.of(true),
+        dropCursor(),
+        indentOnInput(),
+        bracketMatching(),
+        rectangularSelection(),
+        crosshairCursor(),
+        highlightActiveLine(),
         lumenEditorTheme,
         syntaxHighlighting(lumenHighlightStyle),
         languageSlot.of(props.language ?? []),
