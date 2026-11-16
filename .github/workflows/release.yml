@@ -1,0 +1,37 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  CZ: pipx run --spec commitizen>=4,<5 cz
+
+jobs:
+  bump:
+    if: ${{ !startsWith(github.event.head_commit.message, 'bump:') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - name: Bump version and tag
+        run: |
+          set +e
+          next=$($CZ bump --get-next --yes)
+          code=$?
+          set -e
+          if [ "$code" = 21 ]; then exit 0; fi
+          [ "$code" = 0 ] || exit "$code"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          $CZ bump --yes
+          git push --atomic origin "HEAD:main" "v$next"

@@ -1,0 +1,22 @@
+import js from '@eslint/js';
+import prettier from 'eslint-config-prettier';
+import vue from 'eslint-plugin-vue';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config(
+  { ignores: ['dist/', 'coverage/', '.superpowers/'] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...vue.configs['flat/recommended'],
+  {
+    files: ['**/*.vue'],
+    languageOptions: { parserOptions: { parser: tseslint.parser } },
+  },
+  {
+    languageOptions: { globals: { ...globals.browser, ...globals.node } },
+    rules: { 'vue/multi-word-component-names': 'off' },
+  },
+  { files: ['src/markdown/MarkdownView.vue'], rules: { 'vue/no-v-html': 'off' } },
+  prettier,
+);

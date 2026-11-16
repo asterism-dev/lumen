@@ -1,0 +1,56 @@
+@import 'dockview-vue/dist/styles/dockview.css' layer(lumen.dockview);
+
+@layer lumen {
+  .lm-dock {
+    flex: 1;
+    min-height: 0;
+  }
+  .lm-dock .dv-content-container {
+    position: relative;
+  }
+  .lm-dock .dockview-theme-light {
+    --dv-group-view-background-color: var(--bg);
+    --dv-tabs-and-actions-container-background-color: var(--panel);
+    --dv-activegroup-visiblepanel-tab-background-color: var(--bg);
+    --dv-activegroup-hiddenpanel-tab-background-color: var(--panel);
+    --dv-inactivegroup-visiblepanel-tab-background-color: var(--bg);
+    --dv-inactivegroup-hiddenpanel-tab-background-color: var(--panel);
+    --dv-activegroup-visiblepanel-tab-color: var(--text);
+    --dv-activegroup-hiddenpanel-tab-color: var(--muted);
+    --dv-inactivegroup-visiblepanel-tab-color: var(--text);
+    --dv-inactivegroup-hiddenpanel-tab-color: var(--muted);
+    --dv-separator-border: var(--border);
+    --dv-paneview-header-border-color: var(--border);
+    --dv-tab-divider-color: var(--border);
+    --dv-active-sash-color: var(--accent);
+    --dv-drag-over-background-color: color-mix(in srgb, var(--accent) 20%, transparent);
+    --dv-drag-over-border-color: var(--accent);
+    --dv-icon-hover-background-color: var(--select);
+    --dv-floating-border: 1px solid var(--border);
+    --dv-floating-box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+  .lm-dock .dv-tab {
+    font: var(--font-ui);
+  }
+  .lm-dock-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    padding: 0 4px 0 10px;
+  }
+  .lm-dock-tab__close {
+    display: inline-flex;
+    padding: 0 3px;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 4px;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+  .lm-dock-tab__close:hover {
+    opacity: 1;
+    background: var(--border);
+  }
+}
