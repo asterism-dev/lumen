@@ -44,6 +44,9 @@ const control = useFieldControl(
 @layer lumen {
   .lm-choice {
     display: inline-flex;
+    /* Keeps flex columns and grids from stretching the clickable label across the row */
+    width: fit-content;
+    max-width: 100%;
     align-items: center;
     gap: 6px;
     cursor: pointer;

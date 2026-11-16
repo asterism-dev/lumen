@@ -43,3 +43,17 @@ describe('Badge and StatusDot variants', () => {
     );
   });
 });
+
+describe('Decorative StatusDot and Badge pill', () => {
+  it('hides a StatusDot without label from assistive tech', () => {
+    const wrapper = mount(StatusDot, { props: { tone: 'accent' } });
+    expect(wrapper.attributes('aria-hidden')).toBe('true');
+    expect(wrapper.attributes('role')).toBeUndefined();
+  });
+
+  it('renders the pill variant and normal weight', () => {
+    const classes = mount(Badge, { props: { variant: 'pill', weight: 'normal' } }).classes();
+    expect(classes).toEqual(expect.arrayContaining(['lm-badge--pill', 'lm-badge--normal']));
+    expect(mount(Badge).classes()).not.toContain('lm-badge--normal');
+  });
+});

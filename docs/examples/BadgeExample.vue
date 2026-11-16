@@ -12,5 +12,7 @@ import { Badge } from '@asterism-dev/lumen';
     <Badge tone="merged">#14 merged</Badge>
     <Badge as="a" tone="success" href="#">Link badge</Badge>
     <Badge variant="outline" tone="muted">Outdated</Badge>
+    <Badge variant="outline" weight="normal">resolved</Badge>
+    <Badge variant="pill" weight="normal">12</Badge>
   </div>
 </template>

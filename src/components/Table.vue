@@ -10,6 +10,11 @@ defineProps<{
   sortState?: Record<string, 'ascending' | 'descending'>;
   hideHeader?: boolean;
   rowClickable?: (row: Row) => boolean;
+  // 'clickable' limits the hover highlight to rows where rowClickable is true
+  hover?: 'all' | 'clickable';
+  size?: 'md' | 'sm';
+  borderless?: boolean;
+  valign?: 'middle' | 'top';
 }>();
 
 defineEmits<{ 'row-click': [row: Row] }>();
@@ -24,7 +29,14 @@ defineSlots<{
 
 <template>
   <div class="lm-table-wrap">
-    <table class="lm-table">
+    <table
+      class="lm-table"
+      :class="{
+        'lm-table--sm': size === 'sm',
+        'lm-table--borderless': borderless,
+        'lm-table--top': valign === 'top',
+      }"
+    >
       <thead v-if="!hideHeader">
         <tr>
           <th
@@ -48,6 +60,7 @@ defineSlots<{
           v-for="row in rows"
           :key="String(row[rowKey])"
           class="lm-table__row"
+          :class="{ 'lm-table__row--hover': hover !== 'clickable' }"
           v-bind="
             rowClickable?.(row)
               ? {
@@ -120,7 +133,8 @@ defineSlots<{
     font-weight: 600;
     border-bottom: 0;
   }
-  .lm-table__row:hover {
+  .lm-table__row--hover:hover,
+  .lm-table__row--clickable:hover {
     background: var(--select);
   }
   .lm-table__row--clickable {
@@ -130,14 +144,28 @@ defineSlots<{
     outline: 2px solid var(--accent);
     outline-offset: -2px;
   }
+  .lm-table--sm .lm-table__th {
+    font-size: 12px;
+  }
+  .lm-table--sm .lm-table__th,
+  .lm-table--sm .lm-table__td {
+    padding: 6px 8px;
+  }
+  .lm-table--borderless .lm-table__th,
+  .lm-table--borderless .lm-table__td {
+    border-bottom: 0;
+  }
+  .lm-table--top .lm-table__td {
+    vertical-align: top;
+  }
   .lm-table__empty {
     padding: 16px 10px;
     color: var(--muted);
     text-align: center;
   }
   @media (max-width: 767.98px) {
-    .lm-table__th,
-    .lm-table__td {
+    .lm-table .lm-table__th,
+    .lm-table .lm-table__td {
       padding-block: 12px;
     }
   }

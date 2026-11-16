@@ -111,6 +111,56 @@ describe('Combobox extras', () => {
     expect(wrapper.emitted('update:open')).toEqual([[false]]);
   });
 
+  it('emits select with the beforeSelect result after committing', async () => {
+    wrapper = mount(Combobox, {
+      props: { modelValue: '', items, open: true, beforeSelect: async (v: string) => ({ v }) },
+      attachTo: document.body,
+    });
+    await wrapper.vm.$nextTick();
+    options()[1].click();
+    await flushPromises();
+    expect(wrapper.emitted('update:modelValue')).toEqual([['dev']]);
+    expect(wrapper.emitted('select')).toEqual([['dev', { v: 'dev' }]]);
+  });
+
+  it('passes the raw beforeSelect error to the error slot', async () => {
+    const failure = Object.assign(new Error('Needs setup'), { kind: 'needs_setup' });
+    wrapper = mount(Combobox, {
+      props: { modelValue: '', items, open: true, beforeSelect: () => Promise.reject(failure) },
+      slots: {
+        error:
+          '<template #error="{ error }"><button class="fix">{{ error.kind }}</button></template>',
+      },
+      attachTo: document.body,
+    });
+    await wrapper.vm.$nextTick();
+    options()[0].click();
+    await flushPromises();
+    expect(document.body.querySelector('.lm-combobox__error .fix')!.textContent).toBe(
+      'needs_setup',
+    );
+  });
+
+  it('applies item classes, exposes item data and renders search-start first', async () => {
+    wrapper = mount(Combobox, {
+      props: {
+        modelValue: '',
+        items: [{ value: 'a', label: 'A', class: 'top', data: { author: 'kim' } }],
+        open: true,
+      },
+      slots: {
+        'search-start': '<button class="provider">P</button>',
+        item: '<template #item="{ item }">{{ item.data.author }}</template>',
+      },
+      attachTo: document.body,
+    });
+    await wrapper.vm.$nextTick();
+    expect(options()[0].classList).toContain('top');
+    expect(options()[0].textContent).toContain('kim');
+    const search = document.body.querySelector('.lm-combobox__search')!;
+    expect(search.firstElementChild!.classList).toContain('provider');
+  });
+
   it('uses the trigger slot as the trigger', async () => {
     wrapper = mount(Combobox, {
       props: { modelValue: 'dev', items },

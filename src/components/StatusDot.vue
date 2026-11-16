@@ -1,14 +1,19 @@
 <script setup lang="ts">
 withDefaults(
-  defineProps<{ tone?: 'none' | 'idle' | 'waiting' | 'exited' | 'accent'; label: string }>(),
+  defineProps<{ tone?: 'none' | 'idle' | 'waiting' | 'exited' | 'accent'; label?: string }>(),
   {
     tone: 'none',
+    label: undefined,
   },
 );
 </script>
 
 <template>
-  <span class="lm-status-dot" :class="`lm-status-dot--${tone}`" role="img" :aria-label="label" />
+  <span
+    class="lm-status-dot"
+    :class="`lm-status-dot--${tone}`"
+    v-bind="label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true' }"
+  />
 </template>
 
 <style>

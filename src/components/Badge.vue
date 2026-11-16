@@ -2,10 +2,11 @@
 withDefaults(
   defineProps<{
     tone?: 'default' | 'muted' | 'success' | 'warning' | 'danger' | 'merged';
-    variant?: 'plain' | 'outline';
+    variant?: 'plain' | 'outline' | 'pill';
+    weight?: 'normal' | 'bold';
     as?: string;
   }>(),
-  { tone: 'default', variant: 'plain', as: 'span' },
+  { tone: 'default', variant: 'plain', weight: 'bold', as: 'span' },
 );
 </script>
 
@@ -13,7 +14,10 @@ withDefaults(
   <component
     :is="as"
     class="lm-badge"
-    :class="[`lm-badge--${tone}`, { 'lm-badge--outline': variant === 'outline' }]"
+    :class="[
+      `lm-badge--${tone}`,
+      { [`lm-badge--${variant}`]: variant !== 'plain', 'lm-badge--normal': weight === 'normal' },
+    ]"
     ><slot
   /></component>
 </template>
@@ -32,6 +36,15 @@ withDefaults(
     padding: 0 6px;
     border-radius: 8px;
     border: 1px solid var(--border);
+  }
+  .lm-badge--pill {
+    font-size: 11px;
+    padding: 0 7px;
+    border-radius: 10px;
+    background: var(--select);
+  }
+  .lm-badge--normal {
+    font-weight: 400;
   }
   .lm-badge--muted {
     color: var(--muted);

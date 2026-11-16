@@ -74,10 +74,12 @@ Touch sizing (the two points above, plus always-visible `ListItem` actions) can 
 - `Checkbox` and `Switch` put `class` and `style` on their `<label>`; all other attributes go to the control.
 - `NumberInput` emits a `number`, or `null` while the field is empty.
 - `Dialog` is controlled: Escape and backdrop clicks emit `update:open(false)`; ignore it to keep the dialog open (e.g. while busy). Use `@open-auto-focus` to focus a specific element.
-- `Combobox` does not filter. Bind `v-model:search` and pass the matching `items`; search resets when it opens. Use the `header` slot for tabs and `search-actions` for a refresh button.
+- `Combobox` does not filter. Bind `v-model:search` and pass the matching `items`; search resets when it opens. Use the `header` slot for tabs, `search-start`/`search-actions` for buttons around the search, and `@select(value, result)` to receive what `beforeSelect` loaded.
 - `ContextMenu` wraps the element it belongs to; right-click (or long-press) opens it at the pointer.
 - `Checkbox`, `Switch` and `RadioGroup` render their own `<label>`; pass the label text as slot content, or `aria-label` without one.
-- `Table` rows are clickable only where `rowClickable(row)` returns true; they then emit `row-click` on click and Enter.
+- `Table` rows are clickable only where `rowClickable(row)` returns true; they then emit `row-click` on click and Enter. `hover="clickable"` limits the hover highlight to those rows.
+- `Table` column classes and `Combobox` item classes land on elements lumen renders; style them with `:deep()` from scoped CSS.
+- `Checkbox`, `Switch` and `RadioGroup` labels are only as wide as their content, also in flex columns.
 - `Tooltip` brings its own provider, so it works without app setup. It does not show on touch devices; don't put essential information in it.
 - `CodeEditor` ships a minimal setup (no search, no autocomplete). Pass the language as a CodeMirror extension, e.g. `:language="javascript()"`.
 
