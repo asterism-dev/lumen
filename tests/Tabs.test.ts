@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { defineComponent, h, nextTick, onMounted } from 'vue';
 import { afterEach, describe, expect, it } from 'vitest';
 import Tabs from '../src/components/Tabs.vue';
 
@@ -40,5 +40,26 @@ describe('Tabs', () => {
     await triggers[0].trigger('keydown', { key: 'ArrowRight' });
     await nextTick();
     expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['b']);
+  });
+
+  it('keeps inactive panels mounted and hidden with keepMounted', async () => {
+    let mounts = 0;
+    const Probe = defineComponent({
+      setup() {
+        onMounted(() => mounts++);
+        return () => h('i', 'probe');
+      },
+    });
+    wrapper = mount(Tabs, {
+      props: { tabs, modelValue: 'a', keepMounted: true },
+      slots: { a: () => h(Probe), b: 'panel B', c: 'panel C' },
+      attachTo: document.body,
+    });
+    const panelB = wrapper.findAll('[role="tabpanel"]')[1];
+    expect(panelB.text()).toBe('panel B');
+    expect(panelB.attributes('data-state')).toBe('inactive');
+    await wrapper.setProps({ modelValue: 'b' });
+    await wrapper.setProps({ modelValue: 'a' });
+    expect(mounts).toBe(1);
   });
 });

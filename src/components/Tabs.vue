@@ -8,7 +8,7 @@ export interface TabItem {
   icon?: Component;
 }
 
-defineProps<{ tabs: TabItem[] }>();
+defineProps<{ tabs: TabItem[]; keepMounted?: boolean }>();
 const model = defineModel<string>({ required: true });
 </script>
 
@@ -20,7 +20,13 @@ const model = defineModel<string>({ required: true });
         {{ tab.label }}
       </TabsTrigger>
     </TabsList>
-    <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value" class="lm-tabs__panel">
+    <TabsContent
+      v-for="tab in tabs"
+      :key="tab.value"
+      :value="tab.value"
+      :force-mount="keepMounted || undefined"
+      class="lm-tabs__panel"
+    >
       <slot :name="tab.value" />
     </TabsContent>
   </TabsRoot>
@@ -72,6 +78,9 @@ const model = defineModel<string>({ required: true });
   .lm-tabs__panel {
     flex: 1;
     min-height: 0;
+  }
+  .lm-tabs__panel[data-state='inactive'] {
+    display: none;
   }
   @media (max-width: 767.98px) {
     .lm-tabs__tab {
