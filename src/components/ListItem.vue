@@ -38,7 +38,6 @@ defineProps<{ value: string; disabled?: boolean }>();
   }
   .lm-list-item[data-disabled] {
     color: var(--muted);
-    opacity: 0.6;
   }
   .lm-list-item:focus-visible {
     outline: 2px solid var(--accent);

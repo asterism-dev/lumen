@@ -59,4 +59,18 @@ describe('List', () => {
     await items()[3].trigger('click');
     expect(wrapper.emitted('update:modelValue')).toEqual([['d']]);
   });
+
+  it('keeps the selection when the selected row is clicked again', async () => {
+    wrapper = make();
+    await items()[1].trigger('click');
+    await wrapper.setProps({ modelValue: 'b' });
+    await items()[1].trigger('click');
+    const emitted = wrapper.emitted('update:modelValue') as unknown[][];
+    expect(emitted.every(([v]) => v === 'b')).toBe(true);
+  });
+
+  it('labels the listbox', () => {
+    wrapper = make();
+    expect(wrapper.find('[role="listbox"]').attributes('aria-label')).toBe('Tasks');
+  });
 });

@@ -6,8 +6,8 @@ const model = defineModel<string | null>({ required: true });
 </script>
 
 <template>
-  <ListboxRoot v-model="model" class="lm-list" :aria-label="ariaLabel">
-    <ListboxContent class="lm-list__content">
+  <ListboxRoot v-model="model" class="lm-list" selection-behavior="replace">
+    <ListboxContent class="lm-list__content" :aria-label="ariaLabel">
       <slot />
     </ListboxContent>
   </ListboxRoot>
