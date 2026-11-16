@@ -51,6 +51,9 @@ At `max-width: 767.98px` (also exposed as `useIsMobile()`):
 
 - Clickable elements are at least 44px tall.
 - Inputs, selects, textareas and editors use `font-size: 16px`.
+
+Touch sizing (the two points above, plus always-visible `ListItem` actions) can be enabled at any width, e.g. for tablets: add the class `lm-touch` to `<html>` or any container. It only sets `--lm-touch-target` and `--lm-input-font-size`; layout changes such as the full-screen dialog stay tied to the phone width.
+
 - `Dialog` becomes a full-screen sheet that respects `env(safe-area-inset-*)`.
 - `Kbd` is hidden.
 - `WorkspaceRail` respects `env(safe-area-inset-*)` on its left, right and bottom edges.
@@ -67,7 +70,8 @@ At `max-width: 767.98px` (also exposed as `useIsMobile()`):
 - `Dock` is controlled: `panels` is the source of truth. Closing a tab emits `close(id)`; the app removes the panel. `ready(api)` fires again with a new api after a mobile to desktop remount, so drop the old one.
 - `DataTable` treats rows as immutable. Replace the array instead of mutating it.
 - `Field` adds label, hint and error to one input. Validation is optional: pass `rules` (functions returning `true` or a message) and/or an `error` from the app. Rule errors show after the field is first left; `Form` validates all fields on submit and emits `submit` only when valid.
-- `Select` is a native `<select>` so phones get the system picker. Option values keep their type (`string` or `number`).
+- `Select` is a native `<select>` so phones get the system picker. Option values keep their type (`string`, `number` or `null`).
+- `Checkbox` and `Switch` put `class` and `style` on their `<label>`; all other attributes go to the control.
 - `NumberInput` emits a `number`, or `null` while the field is empty.
 - `Dialog` is controlled: Escape and backdrop clicks emit `update:open(false)`; ignore it to keep the dialog open (e.g. while busy). Use `@open-auto-focus` to focus a specific element.
 - `Combobox` does not filter. Bind `v-model:search` and pass the matching `items`; search resets when it opens. Use the `header` slot for tabs and `search-actions` for a refresh button.

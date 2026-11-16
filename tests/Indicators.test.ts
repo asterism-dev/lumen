@@ -32,3 +32,14 @@ describe('StatusDot', () => {
     expect(wrapper.classes()).toContain('lm-status-dot--waiting');
   });
 });
+
+describe('Badge and StatusDot variants', () => {
+  it('renders the outline pill and the accent tone', () => {
+    expect(mount(Badge, { props: { variant: 'outline' } }).classes()).toContain(
+      'lm-badge--outline',
+    );
+    expect(mount(StatusDot, { props: { tone: 'accent', label: 'New' } }).classes()).toContain(
+      'lm-status-dot--accent',
+    );
+  });
+});

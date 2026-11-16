@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends string">
-import { Check, ChevronDown } from '@lucide/vue';
-import { computed, watch } from 'vue';
+import { Check, ChevronDown, LoaderCircle } from '@lucide/vue';
+import { computed, ref, watch } from 'vue';
 import {
   ListboxContent,
   ListboxFilter,
@@ -16,6 +16,9 @@ import { useFieldControl } from '../composables/useField';
 export interface ComboboxOption<V extends string = string> {
   value: V;
   label: string;
+  disabled?: boolean;
+  // Shown as tooltip, e.g. why the option is disabled
+  title?: string;
 }
 
 const props = defineProps<{
@@ -26,6 +29,8 @@ const props = defineProps<{
   disabled?: boolean;
   loading?: boolean;
   invalid?: boolean;
+  // Runs before a pick is committed; a rejection keeps the panel open and shows its message
+  beforeSelect?: (value: T, signal: AbortSignal) => Promise<unknown>;
 }>();
 const model = defineModel<T | ''>({ required: true });
 // Filtering is the caller's job: watch `search` and pass the matching `items`
@@ -37,6 +42,7 @@ const control = useFieldControl(
 );
 
 defineSlots<{
+  trigger?: (props: { value: T | ''; label: string; open: boolean }) => unknown;
   value?: (props: { value: T | ''; label: string }) => unknown;
   header?: () => unknown;
   'search-actions'?: () => unknown;
@@ -48,20 +54,51 @@ const selectedLabel = computed(
   () => props.items.find((i) => i.value === model.value)?.label ?? model.value,
 );
 
+const pending = ref<T | null>(null);
+const pickError = ref('');
+let pickAbort: AbortController | undefined;
+
 watch(open, (isOpen) => {
   if (isOpen) search.value = '';
+  else pickAbort?.abort();
+  pickError.value = '';
 });
 
-function onPick(value: unknown) {
-  if (typeof value !== 'string') return;
-  model.value = value as T;
+function commit(value: T) {
+  model.value = value;
   open.value = false;
+}
+
+async function onPick(value: unknown) {
+  if (typeof value !== 'string') return;
+  pickAbort?.abort();
+  pickError.value = '';
+  if (!props.beforeSelect) return commit(value as T);
+  const controller = new AbortController();
+  pickAbort = controller;
+  pending.value = value as T;
+  try {
+    await props.beforeSelect(value as T, controller.signal);
+    if (!controller.signal.aborted) commit(value as T);
+  } catch (e) {
+    if (!controller.signal.aborted) pickError.value = e instanceof Error ? e.message : String(e);
+  } finally {
+    if (pickAbort === controller) pending.value = null;
+  }
 }
 </script>
 
 <template>
   <PopoverRoot v-model:open="open">
-    <PopoverTrigger class="lm-combobox" v-bind="control.attrs.value" :disabled="disabled">
+    <PopoverTrigger
+      v-if="$slots.trigger"
+      as-child
+      v-bind="control.attrs.value"
+      :disabled="disabled"
+    >
+      <slot name="trigger" :value="model" :label="selectedLabel" :open="open" />
+    </PopoverTrigger>
+    <PopoverTrigger v-else class="lm-combobox" v-bind="control.attrs.value" :disabled="disabled">
       <span v-if="label" class="lm-combobox__label">{{ label }}</span>
       <span class="lm-combobox__value">
         <slot name="value" :value="model" :label="selectedLabel">
@@ -86,17 +123,27 @@ function onPick(value: unknown) {
             />
             <slot name="search-actions" />
           </div>
+          <p v-if="pickError" class="lm-combobox__error" role="alert">{{ pickError }}</p>
           <ListboxContent class="lm-combobox__list">
             <ListboxItem
               v-for="item in items"
               :key="item.value"
               :value="item.value"
+              :disabled="item.disabled"
+              :title="item.title"
+              :aria-busy="pending === item.value || undefined"
               class="lm-combobox__item"
             >
               <slot name="item" :item="item" :selected="item.value === model">
                 <span class="lm-combobox__text">{{ item.label }}</span>
               </slot>
-              <Check v-if="item.value === model" :size="14" :stroke-width="1.75" />
+              <LoaderCircle
+                v-if="pending === item.value"
+                :size="14"
+                :stroke-width="1.75"
+                class="lm-combobox__spinner"
+              />
+              <Check v-else-if="item.value === model" :size="14" :stroke-width="1.75" />
             </ListboxItem>
             <p v-if="!items.length" class="lm-combobox__empty">
               <slot name="empty">{{ loading ? 'Loading…' : 'No results.' }}</slot>
@@ -194,19 +241,35 @@ function onPick(value: unknown) {
   .lm-combobox__item[data-highlighted] {
     background: var(--select);
   }
+  .lm-combobox__item[data-disabled] {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .lm-combobox__spinner {
+    flex: none;
+    animation: lm-spin 1s linear infinite;
+  }
+  @keyframes lm-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .lm-combobox__error {
+    margin: 0;
+    padding: 4px 6px;
+    color: var(--danger);
+  }
   .lm-combobox__empty {
     margin: 0;
     padding: 4px 6px;
     color: var(--muted);
   }
-  @media (max-width: 767.98px) {
-    .lm-combobox,
-    .lm-combobox__item {
-      min-height: 44px;
-    }
-    .lm-combobox__input {
-      font-size: 16px;
-    }
+  .lm-combobox,
+  .lm-combobox__item {
+    min-height: var(--lm-touch-target);
+  }
+  .lm-combobox__input {
+    font-size: var(--lm-input-font-size);
   }
 }
 </style>

@@ -186,10 +186,8 @@ const forwardedSlots = () =>
     margin-top: 4px;
     font-weight: 400;
   }
-  @media (max-width: 767.98px) {
-    .lm-data-table__sort {
-      min-height: 44px;
-    }
+  .lm-data-table__sort {
+    min-height: var(--lm-touch-target);
   }
 }
 </style>

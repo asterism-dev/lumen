@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { Check, Minus } from '@lucide/vue';
 import { CheckboxIndicator, CheckboxRoot } from 'reka-ui';
+import type { StyleValue } from 'vue';
 import { useFieldControl } from '../composables/useField';
 
+// class and style lay out the label; all other attrs target the control
 defineOptions({ inheritAttrs: false });
 const model = defineModel<boolean | 'indeterminate'>({ required: true });
 const props = defineProps<{ disabled?: boolean; invalid?: boolean }>();
@@ -13,12 +15,17 @@ const control = useFieldControl(
 </script>
 
 <template>
-  <label class="lm-choice" :class="{ 'lm-choice--disabled': disabled }">
+  <label
+    class="lm-choice"
+    :class="[{ 'lm-choice--disabled': disabled }, $attrs.class]"
+    :style="$attrs.style as StyleValue"
+  >
     <CheckboxRoot
       v-bind="{
         ...control.attrs.value,
         ...$attrs,
-        class: [control.attrs.value.class, $attrs.class],
+        class: control.attrs.value.class,
+        style: undefined,
       }"
       v-model="model"
       :disabled="disabled"
@@ -71,11 +78,9 @@ const control = useFieldControl(
   .lm-checkbox__indicator {
     display: contents;
   }
-  @media (max-width: 767.98px) {
-    .lm-choice {
-      min-height: 44px;
-      min-width: 44px;
-    }
+  .lm-choice {
+    min-height: var(--lm-touch-target);
+    min-width: var(--lm-touch-target);
   }
 }
 </style>

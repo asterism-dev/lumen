@@ -16,7 +16,7 @@ import { Menu, type MenuItem } from '@asterism-dev/lumen';
 
 | Prop | Type | Default | Notes |
 | --- | --- | --- | --- |
-| `items` | `MenuItem[]` | required | `{ label, action, icon?, danger?, checked?, disabled? }` |
+| `items` | `MenuItem[]` | required | `{ label, action, icon?, iconProps?, danger?, checked?, disabled?, title? }`; `iconProps` are passed to `icon`, `title` is the tooltip. |
 | `align` | `start` \| `center` \| `end` | `start` |  |
 | `v-model:open` | `boolean` | `false` |  |
 

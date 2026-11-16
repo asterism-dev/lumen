@@ -49,3 +49,16 @@ describe('tokens.css', () => {
     expect(css.trim()).toMatch(/^@layer lumen\s*\{/);
   });
 });
+
+describe('touch sizing', () => {
+  it('sets the touch variables on phones and under .lm-touch', () => {
+    const blocks = [
+      ...css.matchAll(/(@media \(max-width: 767\.98px\) \{\s*:root|\.lm-touch) \{([^}]*)\}/g),
+    ];
+    expect(blocks.map((b) => b[1].startsWith('.lm-touch'))).toEqual([false, true]);
+    for (const [, , body] of blocks) {
+      expect(body).toContain('--lm-touch-target: 44px');
+      expect(body).toContain('--lm-input-font-size: 16px');
+    }
+  });
+});

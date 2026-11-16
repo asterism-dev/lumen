@@ -113,11 +113,9 @@ defineExpose({ view: () => view.value });
   .lm-code-editor .cm-editor {
     height: 100%;
   }
-  @media (max-width: 767.98px) {
-    .lm-code-editor .cm-content,
-    .lm-code-editor .cm-gutters {
-      font-size: 16px;
-    }
+  .lm-code-editor .cm-content,
+  .lm-code-editor .cm-gutters {
+    font-size: var(--lm-input-font-size);
   }
 }
 </style>

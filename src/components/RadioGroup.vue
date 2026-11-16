@@ -6,16 +6,26 @@ export interface RadioOption<V extends string = string> {
   value: V;
   label: string;
   disabled?: boolean;
+  title?: string;
 }
 
-const props = defineProps<{ options: RadioOption<T>[]; disabled?: boolean; invalid?: boolean }>();
+const props = withDefaults(
+  defineProps<{
+    options: RadioOption<T>[];
+    disabled?: boolean;
+    invalid?: boolean;
+    // custom: the option slot is the whole item (e.g. a color swatch), without radio dot
+    variant?: 'radio' | 'custom';
+  }>(),
+  { variant: 'radio' },
+);
 const model = defineModel<T>({ required: true });
 const control = useFieldControl(
   () => model.value,
   () => props.invalid,
 );
 
-defineSlots<{ option?: (props: { option: RadioOption<T> }) => unknown }>();
+defineSlots<{ option?: (props: { option: RadioOption<T>; checked: boolean }) => unknown }>();
 </script>
 
 <template>
@@ -26,17 +36,37 @@ defineSlots<{ option?: (props: { option: RadioOption<T> }) => unknown }>();
     v-bind="control.attrs.value"
     :aria-labelledby="control.labelId"
   >
-    <label
-      v-for="option in options"
-      :key="option.value"
-      class="lm-choice"
-      :class="{ 'lm-choice--disabled': disabled || option.disabled }"
-    >
-      <RadioGroupItem :value="option.value" :disabled="option.disabled" class="lm-radio">
-        <RadioGroupIndicator class="lm-radio__dot" />
+    <template v-if="variant === 'custom'">
+      <RadioGroupItem
+        v-for="option in options"
+        :key="option.value"
+        :value="option.value"
+        :disabled="option.disabled"
+        :aria-label="option.label"
+        :title="option.title"
+        class="lm-radio-custom"
+      >
+        <slot name="option" :option="option" :checked="option.value === model">{{
+          option.label
+        }}</slot>
       </RadioGroupItem>
-      <slot name="option" :option="option">{{ option.label }}</slot>
-    </label>
+    </template>
+    <template v-else>
+      <label
+        v-for="option in options"
+        :key="option.value"
+        class="lm-choice"
+        :class="{ 'lm-choice--disabled': disabled || option.disabled }"
+        :title="option.title"
+      >
+        <RadioGroupItem :value="option.value" :disabled="option.disabled" class="lm-radio">
+          <RadioGroupIndicator class="lm-radio__dot" />
+        </RadioGroupItem>
+        <slot name="option" :option="option" :checked="option.value === model">{{
+          option.label
+        }}</slot>
+      </label>
+    </template>
   </RadioGroupRoot>
 </template>
 
@@ -66,6 +96,32 @@ defineSlots<{ option?: (props: { option: RadioOption<T> }) => unknown }>();
   .lm-radio:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+  .lm-radio-custom {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .lm-radio-custom[data-state='checked'] {
+    box-shadow:
+      0 0 0 2px var(--panel),
+      0 0 0 4px var(--accent);
+  }
+  .lm-radio-custom:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .lm-radio-custom:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 6px;
   }
   .lm-radio__dot {
     width: 8px;

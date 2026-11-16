@@ -51,6 +51,9 @@ At `max-width: 767.98px` (also exposed as `useIsMobile()`):
 
 - Clickable elements are at least 44px tall.
 - Inputs, selects, textareas and editors use `font-size: 16px`.
+
+Touch sizing (the two points above, plus always-visible `ListItem` actions) can be enabled at any width, e.g. for tablets: add the class `lm-touch` to `<html>` or any container. It only sets `--lm-touch-target` and `--lm-input-font-size`; layout changes such as the full-screen dialog stay tied to the phone width.
+
 - `Dialog` becomes a full-screen sheet that respects `env(safe-area-inset-*)`.
 - `Kbd` is hidden.
 - `WorkspaceRail` respects `env(safe-area-inset-*)` on its left, right and bottom edges.

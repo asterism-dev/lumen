@@ -83,3 +83,30 @@ describe('Tabs', () => {
     expect(mounts).toBe(1);
   });
 });
+
+describe('Tabs extras', () => {
+  it('renders the tab slot, the end slot and labels the tab list', () => {
+    wrapper = mount(Tabs, {
+      props: { tabs, modelValue: 'b', variant: 'underline' },
+      attrs: { 'aria-label': 'Review', class: 'outer' },
+      slots: {
+        tab: '<template #tab="{ tab, active }">{{ tab.label }} <i>{{ active ? 1 : 0 }}</i></template>',
+        end: '<span class="stat">+3</span>',
+        b: 'panel B',
+      },
+      attachTo: document.body,
+    });
+    expect(wrapper.classes()).toContain('outer');
+    expect(wrapper.classes()).toContain('lm-tabs--underline');
+    expect(wrapper.attributes('aria-label')).toBeUndefined();
+    expect(wrapper.find('[role="tablist"]').attributes('aria-label')).toBe('Review');
+    expect(wrapper.findAll('[role="tab"] i').map((i) => i.text())).toEqual(['0', '1', '0']);
+    expect(wrapper.find('.lm-tabs__end .stat').text()).toBe('+3');
+  });
+
+  it('renders no panels for tabs without a slot', () => {
+    wrapper = mount(Tabs, { props: { tabs, modelValue: 'a' }, attachTo: document.body });
+    expect(wrapper.findAll('[role="tabpanel"]')).toHaveLength(0);
+    expect(wrapper.findAll('[role="tab"]')).toHaveLength(3);
+  });
+});

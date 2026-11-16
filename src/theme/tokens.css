@@ -62,4 +62,15 @@
     --hl-type: #e5c07b;
     --hl-attr: #e06c75;
   }
+  /* Touch sizing: phones always, wider touch devices via the .lm-touch opt-in */
+  @media (max-width: 767.98px) {
+    :root {
+      --lm-touch-target: 44px;
+      --lm-input-font-size: 16px;
+    }
+  }
+  .lm-touch {
+    --lm-touch-target: 44px;
+    --lm-input-font-size: 16px;
+  }
 }

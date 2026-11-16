@@ -17,6 +17,7 @@ import { Badge } from '@asterism-dev/lumen';
 | Prop | Type | Default | Notes |
 | --- | --- | --- | --- |
 | `tone` | `default` \| `muted` \| `success` \| `warning` \| `danger` \| `merged` | `default` |  |
+| `variant` | `plain` \| `outline` | `plain` | `outline` is a bordered pill. |
 | `as` | `string` | `span` | Element to render, e.g. `a`. |
 
 ## Notes

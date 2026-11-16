@@ -43,3 +43,30 @@ describe('ContextMenu', () => {
     expect(menuItems().map((i) => i.textContent?.trim())).toEqual(['Copy']);
   });
 });
+
+describe('Menu item extras', () => {
+  it('passes iconProps to the icon and title to the item', async () => {
+    const Icon = { props: ['id'], template: '<i class="icon">{{ id }}</i>' };
+    wrapper = mount(Menu, {
+      props: {
+        open: true,
+        items: [
+          {
+            label: 'Linear',
+            action: () => {},
+            icon: Icon,
+            iconProps: { id: 'linear' },
+            disabled: true,
+            title: 'Not configured',
+          },
+        ],
+      },
+      slots: { default: '<button>Open</button>' },
+      attachTo: document.body,
+    });
+    await wrapper.vm.$nextTick();
+    const [item] = menuItems();
+    expect(item.querySelector('.icon')!.textContent).toBe('linear');
+    expect(item.getAttribute('title')).toBe('Not configured');
+  });
+});

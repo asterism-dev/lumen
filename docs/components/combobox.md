@@ -19,7 +19,8 @@ import { Combobox } from '@asterism-dev/lumen';
 | `v-model` | `string` | required | Selected value, `''` for none. |
 | `v-model:search` | `string` | `''` | Reset to `''` whenever the popover opens. |
 | `v-model:open` | `boolean` | `false` |  |
-| `items` | `ComboboxOption[]` | required | `{ value, label }`, already filtered. |
+| `items` | `ComboboxOption[]` | required | `{ value, label, disabled?, title? }`, already filtered. `title` is the tooltip, e.g. why an item is disabled. |
+| `beforeSelect` | `(value, signal) => Promise` | – | Runs before a pick is committed. While it runs the item shows a spinner; a rejection keeps the panel open and shows its message. Picking again or closing aborts `signal`. |
 | `label` | `string` | – | Small caption above the value. |
 | `placeholder` | `string` | – | Shown without a value. |
 | `searchPlaceholder` | `string` | `Search` |  |
@@ -29,4 +30,4 @@ import { Combobox } from '@asterism-dev/lumen';
 
 ## Notes
 
-The combobox does not filter, so async searches and custom matching stay in the app. Slots: `header` (above the search, e.g. tabs), `search-actions` (next to the search, e.g. refresh), `value` (`{ value, label }`), `item` (`{ item, selected }`) and `empty`.
+The combobox does not filter, so async searches and custom matching stay in the app. Slots: `trigger` (`{ value, label, open }`, replaces the trigger; must be a single focusable element), `header` (above the search, e.g. tabs), `search-actions` (next to the search, e.g. refresh), `value` (`{ value, label }`), `item` (`{ item, selected }`) and `empty`.

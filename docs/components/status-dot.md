@@ -16,7 +16,7 @@ import { StatusDot } from '@asterism-dev/lumen';
 
 | Prop | Type | Default | Notes |
 | --- | --- | --- | --- |
-| `tone` | `none` \| `idle` \| `waiting` \| `exited` | `none` | `none` is a hollow ring. |
+| `tone` | `none` \| `idle` \| `waiting` \| `exited` \| `accent` | `none` | `none` is a hollow ring. |
 | `label` | `string` | required | Accessible name (`role="img"`). |
 
 ## Notes

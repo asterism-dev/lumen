@@ -41,3 +41,39 @@ describe('SegmentedControl', () => {
     expect(document.activeElement).toBe(items[1].element);
   });
 });
+
+describe('SegmentedControl options', () => {
+  it('disables single options with a reason, or the whole group', async () => {
+    const wrapper = mount(SegmentedControl, {
+      props: {
+        options: [options[0], { ...options[1], disabled: true, title: 'Not available' }],
+        modelValue: 'edit',
+        size: 'sm',
+      },
+    });
+    expect(wrapper.classes()).toContain('lm-segmented--sm');
+    const items = wrapper.findAll('button');
+    expect(items[1].attributes('disabled')).toBeDefined();
+    expect(items[1].attributes('title')).toBe('Not available');
+    await items[1].trigger('click');
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    await wrapper.setProps({ disabled: true });
+    expect(wrapper.findAll('button').every((b) => b.attributes('disabled') !== undefined)).toBe(
+      true,
+    );
+  });
+
+  it('renders custom option content', () => {
+    const wrapper = mount(SegmentedControl, {
+      props: { options, modelValue: 'view' },
+      slots: {
+        option: '<template #option="{ option, active }">{{ option.value }}:{{ active }}</template>',
+      },
+    });
+    expect(wrapper.findAll('button').map((b) => b.text())).toEqual([
+      'edit:false',
+      'view:true',
+      'split:false',
+    ]);
+  });
+});

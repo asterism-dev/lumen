@@ -1,5 +1,7 @@
-<script setup lang="ts" generic="Row extends Record<string, unknown>">
-export type TableColumn = { key: string; label: string; align?: 'left' | 'right' };
+<!-- Record<string, any> (not unknown) so interfaces like `Task` are accepted as rows -->
+<!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
+<script setup lang="ts" generic="Row extends Record<string, any>">
+export type TableColumn = { key: string; label: string; align?: 'left' | 'right'; class?: string };
 
 defineProps<{
   columns: TableColumn[];
@@ -15,6 +17,7 @@ defineEmits<{ 'row-click': [row: Row] }>();
 defineSlots<{
   [name: `header-${string}`]: (props: { column: TableColumn }) => unknown;
   [name: `cell-${string}`]: (props: { row: Row; value: unknown }) => unknown;
+  [name: `footer-${string}`]: (props: { column: TableColumn }) => unknown;
   empty?: () => unknown;
 }>();
 </script>
@@ -28,7 +31,7 @@ defineSlots<{
             v-for="column in columns"
             :key="column.key"
             class="lm-table__th"
-            :class="{ 'lm-table__th--right': column.align === 'right' }"
+            :class="[{ 'lm-table__th--right': column.align === 'right' }, column.class]"
             :aria-sort="sortState?.[column.key]"
           >
             <slot :name="`header-${column.key}`" :column="column">{{ column.label }}</slot>
@@ -60,7 +63,7 @@ defineSlots<{
             v-for="column in columns"
             :key="column.key"
             class="lm-table__td"
-            :class="{ 'lm-table__td--right': column.align === 'right' }"
+            :class="[{ 'lm-table__td--right': column.align === 'right' }, column.class]"
           >
             <slot :name="`cell-${column.key}`" :row="row" :value="row[column.key]">{{
               row[column.key] ?? ''
@@ -68,6 +71,18 @@ defineSlots<{
           </td>
         </tr>
       </tbody>
+      <tfoot v-if="Object.keys($slots).some((name) => name.startsWith('footer-'))">
+        <tr>
+          <td
+            v-for="column in columns"
+            :key="column.key"
+            class="lm-table__td lm-table__foot"
+            :class="[{ 'lm-table__td--right': column.align === 'right' }, column.class]"
+          >
+            <slot :name="`footer-${column.key}`" :column="column" />
+          </td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </template>
@@ -100,6 +115,10 @@ defineSlots<{
   .lm-table__td--right {
     text-align: right;
     font-variant-numeric: tabular-nums;
+  }
+  .lm-table__foot {
+    font-weight: 600;
+    border-bottom: 0;
   }
   .lm-table__row:hover {
     background: var(--select);

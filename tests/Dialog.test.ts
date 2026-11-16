@@ -36,3 +36,27 @@ describe('Dialog', () => {
     expect(wrapper.emitted('update:open')).toEqual([[false]]);
   });
 });
+
+describe('Dialog header', () => {
+  it('renders the title slot and a close button when closable', async () => {
+    wrapper = mount(Dialog, {
+      props: { open: true, closable: true },
+      slots: { title: 'Create Task in <select aria-label="Project"><option>A</option></select>' },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    const el = dialog()!;
+    const title = el.querySelector('.lm-dialog__title')!;
+    expect(title.querySelector('select')).not.toBeNull();
+    expect(el.getAttribute('aria-labelledby')).toBe(title.id);
+    el.querySelector<HTMLElement>('[aria-label="Close"]')!.click();
+    await flushPromises();
+    expect(wrapper.emitted('update:open')).toEqual([[false]]);
+  });
+
+  it('has no close button by default', async () => {
+    wrapper = mount(Dialog, { props: { open: true, title: 'Quit' }, attachTo: document.body });
+    await flushPromises();
+    expect(dialog()!.querySelector('[aria-label="Close"]')).toBeNull();
+  });
+});

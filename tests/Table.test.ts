@@ -99,3 +99,36 @@ describe('Table', () => {
     expect(wrapper.emitted('row-click')).toEqual([[rows[0]], [rows[2]]]);
   });
 });
+
+describe('Table footer and column classes', () => {
+  interface Item {
+    id: string;
+    name: string;
+    size: number;
+  }
+  const items: Item[] = [{ id: 'a', name: 'Alpha', size: 10 }];
+
+  it('accepts interface rows, applies column classes and renders footer slots', () => {
+    wrapper = mount(Table, {
+      props: {
+        columns: [
+          { key: 'name', label: 'Name', class: 'mono' },
+          { key: 'size', label: 'Size', align: 'right' as const },
+        ],
+        rows: items,
+        rowKey: 'id',
+      },
+      slots: { 'footer-name': () => 'Total', 'footer-size': () => '10' },
+    });
+    expect(wrapper.find('th').classes()).toContain('mono');
+    expect(wrapper.find('tbody td').classes()).toContain('mono');
+    const foot = wrapper.findAll('tfoot td');
+    expect(foot.map((td) => td.text())).toEqual(['Total', '10']);
+    expect(foot[1].classes()).toContain('lm-table__td--right');
+  });
+
+  it('renders no tfoot without footer slots', () => {
+    wrapper = mount(Table, { props: { columns, rows, rowKey: 'id' } });
+    expect(wrapper.find('tfoot').exists()).toBe(false);
+  });
+});

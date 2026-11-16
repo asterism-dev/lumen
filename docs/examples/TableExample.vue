@@ -4,7 +4,7 @@ import { Checkbox, StatusDot, Table } from '@asterism-dev/lumen';
 
 const columns = [
   { key: 'pick', label: '' },
-  { key: 'name', label: 'Process' },
+  { key: 'name', label: 'Process', class: 'mono' },
   { key: 'memory', label: 'Memory', align: 'right' as const },
 ];
 const rows = [
@@ -39,7 +39,15 @@ function toggle(id: string, value: boolean | 'indeterminate') {
       <template #cell-name="{ row }">
         {{ row.name }} <StatusDot v-if="row.session" tone="idle" label="Idle" />
       </template>
+      <template #footer-name>Total</template>
+      <template #footer-memory>330 MB</template>
     </Table>
     <span>Opened: {{ opened }}</span>
   </div>
 </template>
+
+<style>
+.lumen-preview .mono {
+  font-family: ui-monospace, monospace;
+}
+</style>
