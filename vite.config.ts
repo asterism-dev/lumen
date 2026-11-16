@@ -11,6 +11,7 @@ const ownerOf = (id: string) => {
 const routeSharedCss: Plugin = {
   name: 'lumen-route-shared-css',
   generateBundle(_, bundle) {
+    const created = new Map<string, string>();
     for (const chunk of Object.values(bundle)) {
       if (chunk.type !== 'chunk' || chunk.isEntry) continue;
       const owners = new Set(
@@ -20,12 +21,22 @@ const routeSharedCss: Plugin = {
         const css = bundle[cssName];
         if (css?.type !== 'asset') continue;
         if (owners.size !== 1) this.error(`${cssName} spans entries: ${[...owners].join(', ')}`);
-        const target = bundle[`${[...owners][0]}.css`];
-        if (target?.type !== 'asset') this.error(`no entry CSS to receive ${cssName}`);
-        target.source = `${css.source}\n${target.source}`;
+        const owner = [...owners][0];
+        const target = bundle[`${owner}.css`];
+        if (target?.type === 'asset') {
+          target.source = `${css.source}\n${target.source}`;
+        } else {
+          const isEntry = Object.values(bundle).some(
+            (c) => c.type === 'chunk' && c.isEntry && c.name === owner,
+          );
+          if (!isEntry) this.error(`${cssName}: ${owner} is not an entry`);
+          created.set(owner, `${created.get(owner) ?? ''}${css.source}\n`);
+        }
         delete bundle[cssName];
       }
     }
+    for (const [owner, source] of created)
+      this.emitFile({ type: 'asset', fileName: `${owner}.css`, source });
   },
 };
 
