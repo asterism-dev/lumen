@@ -28,7 +28,7 @@ defineEmits<{ 'open-link': [href: string] }>();
     </div>
     <div class="lm-md__body" :class="{ 'lm-md__split': mode === 'split' }">
       <CodeEditor
-        v-if="mode !== 'view'"
+        v-show="mode !== 'view'"
         v-model="source"
         :language="markdownLanguage"
         :line-numbers="false"
@@ -71,12 +71,13 @@ defineEmits<{ 'open-link': [href: string] }>();
   .lm-md__split {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(0, 1fr);
     gap: 8px;
   }
   @media (max-width: 767.98px) {
     .lm-md__split {
       grid-template-columns: 1fr;
-      grid-template-rows: 1fr 1fr;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
     }
   }
 }

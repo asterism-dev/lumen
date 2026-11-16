@@ -2,6 +2,7 @@ import type { EditorView } from '@codemirror/view';
 import { mount, type VueWrapper } from '@vue/test-utils';
 import { afterEach, describe, expect, it } from 'vitest';
 import CodeEditor from '../src/editor/CodeEditor.vue';
+import MarkdownView from '../src/markdown/MarkdownView.vue';
 import MarkdownEditor from '../src/editor/MarkdownEditor.vue';
 
 const mounted: VueWrapper[] = [];
@@ -22,7 +23,7 @@ describe('MarkdownEditor', () => {
 
   it('shows only the rendered view in view mode', () => {
     const w = mountEditor({ mode: 'view' });
-    expect(w.find('.cm-editor').exists()).toBe(false);
+    expect(w.find('.cm-editor').isVisible()).toBe(false);
     expect(w.find('.lm-markdown h1').text()).toBe('Hi');
   });
 
@@ -47,5 +48,35 @@ describe('MarkdownEditor', () => {
     view.dispatch({ changes: { from: 0, to: 4, insert: '## Yo' } });
     await w.setProps({ modelValue: w.emitted<string[]>('update:modelValue')![0][0] });
     expect(w.find('.lm-markdown h2').text()).toBe('Yo');
+  });
+
+  it('keeps the same editor view across mode switches', async () => {
+    const w = mountEditor();
+    const get = () => (w.getComponent(CodeEditor).vm as unknown as { view(): EditorView }).view();
+    const before = get();
+    await w.setProps({ mode: 'view' });
+    await w.setProps({ mode: 'edit' });
+    expect(get()).toBe(before);
+    expect(w.find('.cm-editor').isVisible()).toBe(true);
+  });
+
+  it('re-emits open-link from the rendered view', () => {
+    const w = mountEditor({ mode: 'view' });
+    w.getComponent(MarkdownView).vm.$emit('open-link', 'https://example.com');
+    expect(w.emitted('open-link')).toEqual([['https://example.com']]);
+  });
+
+  it('switches panes when the mode prop changes', async () => {
+    const w = mountEditor();
+    expect(w.find('.lm-markdown').exists()).toBe(false);
+    await w.setProps({ mode: 'split' });
+    expect(w.find('.lm-markdown').exists()).toBe(true);
+    await w.setProps({ mode: 'view' });
+    expect(w.find('.cm-editor').isVisible()).toBe(false);
+  });
+
+  it('labels the mode toolbar', () => {
+    const bar = mountEditor().find('[role="toolbar"]');
+    expect(bar.attributes('aria-label')).toBe('Editor mode');
   });
 });
