@@ -1,15 +1,29 @@
 <script setup lang="ts">
 import { Check, Minus } from '@lucide/vue';
 import { CheckboxIndicator, CheckboxRoot } from 'reka-ui';
+import { useFieldControl } from '../composables/useField';
 
 defineOptions({ inheritAttrs: false });
 const model = defineModel<boolean | 'indeterminate'>({ required: true });
-defineProps<{ disabled?: boolean }>();
+const props = defineProps<{ disabled?: boolean; invalid?: boolean }>();
+const control = useFieldControl(
+  () => model.value,
+  () => props.invalid,
+);
 </script>
 
 <template>
   <label class="lm-choice" :class="{ 'lm-choice--disabled': disabled }">
-    <CheckboxRoot v-bind="$attrs" v-model="model" :disabled="disabled" class="lm-checkbox">
+    <CheckboxRoot
+      v-bind="{
+        ...control.attrs.value,
+        ...$attrs,
+        class: [control.attrs.value.class, $attrs.class],
+      }"
+      v-model="model"
+      :disabled="disabled"
+      class="lm-checkbox"
+    >
       <CheckboxIndicator class="lm-checkbox__indicator">
         <Minus v-if="model === 'indeterminate'" :size="12" :stroke-width="3" />
         <Check v-else :size="12" :stroke-width="3" />

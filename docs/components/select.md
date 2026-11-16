@@ -19,6 +19,7 @@ import { Select } from '@asterism-dev/lumen';
 | `v-model` | `string \| number` | required | The option value keeps its type. |
 | `options` | `SelectOption[]` | required | `{ value, label, disabled? }` |
 | `disabled` | `boolean` | `false` |  |
+| `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 
 ## Notes
 

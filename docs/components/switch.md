@@ -18,6 +18,7 @@ import { Switch } from '@asterism-dev/lumen';
 | --- | --- | --- | --- |
 | `v-model` | `boolean` | required |  |
 | `disabled` | `boolean` | `false` |  |
+| `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 
 ## Notes
 

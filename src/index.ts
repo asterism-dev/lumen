@@ -32,3 +32,7 @@ export { default as Tooltip } from './components/Tooltip.vue';
 export { default as Kbd } from './components/Kbd.vue';
 export { default as Badge } from './components/Badge.vue';
 export { default as StatusDot } from './components/StatusDot.vue';
+export { default as Field } from './components/Field.vue';
+export { default as Form } from './components/Form.vue';
+export { required, min, max, minLength, maxLength, pattern } from './validation';
+export type { Rule } from './validation';

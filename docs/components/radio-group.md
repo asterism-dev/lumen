@@ -19,6 +19,7 @@ import { RadioGroup } from '@asterism-dev/lumen';
 | `v-model` | `string` | required |  |
 | `options` | `RadioOption[]` | required | `{ value, label, disabled? }` |
 | `disabled` | `boolean` | `false` |  |
+| `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 
 ## Notes
 

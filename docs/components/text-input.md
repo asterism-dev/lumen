@@ -20,6 +20,7 @@ import { TextInput } from '@asterism-dev/lumen';
 | `type` | `text` \| `search` \| `password` | `text` |  |
 | `placeholder` | `string` | – |  |
 | `disabled` | `boolean` | `false` |  |
+| `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 
 ## Notes
 

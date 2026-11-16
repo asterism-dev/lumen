@@ -25,6 +25,7 @@ import { Combobox } from '@asterism-dev/lumen';
 | `searchPlaceholder` | `string` | `Search` |  |
 | `loading` | `boolean` | `false` |  |
 | `disabled` | `boolean` | `false` |  |
+| `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 
 ## Notes
 

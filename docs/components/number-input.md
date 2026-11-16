@@ -19,6 +19,7 @@ import { NumberInput } from '@asterism-dev/lumen';
 | `v-model` | `number \| null` | required | `null` while the field is empty. |
 | `placeholder` | `string` | – |  |
 | `disabled` | `boolean` | `false` |  |
+| `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 
 ## Notes
 

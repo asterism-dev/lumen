@@ -18,6 +18,7 @@ import { Checkbox } from '@asterism-dev/lumen';
 | --- | --- | --- | --- |
 | `v-model` | `boolean \| 'indeterminate'` | required |  |
 | `disabled` | `boolean` | `false` |  |
+| `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 
 ## Notes
 

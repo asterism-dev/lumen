@@ -11,6 +11,7 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from 'reka-ui';
+import { useFieldControl } from '../composables/useField';
 
 export interface ComboboxOption<V extends string = string> {
   value: V;
@@ -24,11 +25,16 @@ const props = defineProps<{
   searchPlaceholder?: string;
   disabled?: boolean;
   loading?: boolean;
+  invalid?: boolean;
 }>();
 const model = defineModel<T | ''>({ required: true });
 // Filtering is the caller's job: watch `search` and pass the matching `items`
 const search = defineModel<string>('search', { default: '' });
 const open = defineModel<boolean>('open', { default: false });
+const control = useFieldControl(
+  () => model.value,
+  () => props.invalid,
+);
 
 defineSlots<{
   value?: (props: { value: T | ''; label: string }) => unknown;
@@ -55,7 +61,7 @@ function onPick(value: unknown) {
 
 <template>
   <PopoverRoot v-model:open="open">
-    <PopoverTrigger class="lm-combobox" :disabled="disabled">
+    <PopoverTrigger class="lm-combobox" v-bind="control.attrs.value" :disabled="disabled">
       <span v-if="label" class="lm-combobox__label">{{ label }}</span>
       <span class="lm-combobox__value">
         <slot name="value" :value="model" :label="selectedLabel">

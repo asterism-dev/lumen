@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="T extends string">
 import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'reka-ui';
+import { useFieldControl } from '../composables/useField';
 
 export interface RadioOption<V extends string = string> {
   value: V;
@@ -7,14 +8,24 @@ export interface RadioOption<V extends string = string> {
   disabled?: boolean;
 }
 
-defineProps<{ options: RadioOption<T>[]; disabled?: boolean }>();
+const props = defineProps<{ options: RadioOption<T>[]; disabled?: boolean; invalid?: boolean }>();
 const model = defineModel<T>({ required: true });
+const control = useFieldControl(
+  () => model.value,
+  () => props.invalid,
+);
 
 defineSlots<{ option?: (props: { option: RadioOption<T> }) => unknown }>();
 </script>
 
 <template>
-  <RadioGroupRoot v-model="model" :disabled="disabled" class="lm-radio-group">
+  <RadioGroupRoot
+    v-model="model"
+    :disabled="disabled"
+    class="lm-radio-group"
+    v-bind="control.attrs.value"
+    :aria-labelledby="control.labelId"
+  >
     <label
       v-for="option in options"
       :key="option.value"

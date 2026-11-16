@@ -20,6 +20,7 @@ import { Textarea } from '@asterism-dev/lumen';
 | `rows` | `number` | `3` |  |
 | `placeholder` | `string` | – |  |
 | `disabled` | `boolean` | `false` |  |
+| `invalid` | `boolean` | `false` | Marks the control invalid outside a [Field](field.md). |
 
 ## Notes
 

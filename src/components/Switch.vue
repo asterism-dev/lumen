@@ -1,14 +1,28 @@
 <script setup lang="ts">
 import { SwitchRoot, SwitchThumb } from 'reka-ui';
+import { useFieldControl } from '../composables/useField';
 
 defineOptions({ inheritAttrs: false });
 const model = defineModel<boolean>({ required: true });
-defineProps<{ disabled?: boolean }>();
+const props = defineProps<{ disabled?: boolean; invalid?: boolean }>();
+const control = useFieldControl(
+  () => model.value,
+  () => props.invalid,
+);
 </script>
 
 <template>
   <label class="lm-choice" :class="{ 'lm-choice--disabled': disabled }">
-    <SwitchRoot v-bind="$attrs" v-model="model" :disabled="disabled" class="lm-switch">
+    <SwitchRoot
+      v-bind="{
+        ...control.attrs.value,
+        ...$attrs,
+        class: [control.attrs.value.class, $attrs.class],
+      }"
+      v-model="model"
+      :disabled="disabled"
+      class="lm-switch"
+    >
       <SwitchThumb class="lm-switch__thumb" />
     </SwitchRoot>
     <slot />

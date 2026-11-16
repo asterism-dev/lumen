@@ -1,16 +1,23 @@
 <script setup lang="ts">
+import { useFieldControl } from '../composables/useField';
+
 const model = defineModel<string>({ required: true });
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     type?: 'text' | 'search' | 'password';
     placeholder?: string;
     disabled?: boolean;
+    invalid?: boolean;
   }>(),
   {
     type: 'text',
     placeholder: undefined,
   },
+);
+const control = useFieldControl(
+  () => model.value,
+  () => props.invalid,
 );
 </script>
 
@@ -18,6 +25,7 @@ withDefaults(
   <input
     v-model="model"
     class="lm-text-input"
+    v-bind="control.attrs.value"
     :type="type"
     :placeholder="placeholder"
     :disabled="disabled"
