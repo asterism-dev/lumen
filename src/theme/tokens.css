@@ -19,6 +19,9 @@
     --idle: #8a8f98;
     --waiting: #f59e0b;
     --exited: #d0d2d8;
+    --success: #2da44e;
+    --warning: #d4a72c;
+    --merged: #8250df;
     --ws-blue: #3b82f6;
     --ws-green: #22a35a;
     --ws-amber: #d99a06;
