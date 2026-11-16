@@ -9,6 +9,7 @@ import { StatusDot } from '@asterism-dev/lumen';
     <span class="item"><StatusDot tone="waiting" label="Waiting for input" /> waiting</span>
     <span class="item"><StatusDot tone="exited" label="Exited" /> exited</span>
     <span class="item"><StatusDot tone="accent" label="Unread" /> accent</span>
+    <span class="item"><StatusDot tone="waiting" /> decorative, text says it: Waiting</span>
   </div>
 </template>
 

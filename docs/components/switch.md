@@ -24,4 +24,4 @@ import { Switch } from '@asterism-dev/lumen';
 
 Use a switch for settings that apply immediately, and a [Checkbox](checkbox.md) for picking items.
 
-`class` and `style` apply to the surrounding `<label>`, all other attributes to the control.
+`class` and `style` apply to the surrounding `<label>`, all other attributes to the control. The label is only as wide as its content, also in flex columns and grids, so the empty rest of the row is not clickable.

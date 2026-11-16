@@ -132,3 +132,23 @@ describe('Table footer and column classes', () => {
     expect(wrapper.find('tfoot').exists()).toBe(false);
   });
 });
+
+describe('Table variants', () => {
+  it('highlights every row by default, only clickable rows with hover="clickable"', async () => {
+    const rowClickable = (row: Record<string, unknown>) => row.id === 'a';
+    wrapper = mount(Table, { props: { columns, rows, rowKey: 'id', rowClickable } });
+    expect(wrapper.findAll('.lm-table__row--hover')).toHaveLength(3);
+    await wrapper.setProps({ hover: 'clickable' });
+    expect(wrapper.findAll('.lm-table__row--hover')).toHaveLength(0);
+    expect(wrapper.findAll('.lm-table__row--clickable')).toHaveLength(1);
+  });
+
+  it('sets size, borderless and valign modifiers', () => {
+    wrapper = mount(Table, {
+      props: { columns, rows, rowKey: 'id', size: 'sm', borderless: true, valign: 'top' },
+    });
+    expect(wrapper.find('table').classes()).toEqual(
+      expect.arrayContaining(['lm-table--sm', 'lm-table--borderless', 'lm-table--top']),
+    );
+  });
+});

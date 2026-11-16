@@ -11,6 +11,10 @@ const rows = [
   { id: 'a', name: 'claude', memory: '312 MB', session: true },
   { id: 'b', name: 'git fetch', memory: '18 MB', session: false },
 ];
+const shortcuts = [
+  { id: 'palette', action: 'Command palette', keys: '⌘K' },
+  { id: 'terminal', action: 'New terminal', keys: '⌘T', hint: 'Not active in a terminal' },
+];
 const picked = ref<string[]>([]);
 const opened = ref('nothing yet');
 
@@ -43,10 +47,32 @@ function toggle(id: string, value: boolean | 'indeterminate') {
       <template #footer-memory>330 MB</template>
     </Table>
     <span>Opened: {{ opened }}</span>
+    <Table
+      :columns="[
+        { key: 'action', label: 'Action' },
+        { key: 'keys', label: 'Keys', align: 'right' },
+      ]"
+      :rows="shortcuts"
+      row-key="id"
+      hide-header
+      hover="clickable"
+      size="sm"
+      borderless
+      valign="top"
+    >
+      <template #cell-action="{ row }">
+        {{ row.action }}
+        <div v-if="row.hint" class="hint">{{ row.hint }}</div>
+      </template>
+    </Table>
   </div>
 </template>
 
 <style>
+.lumen-preview .hint {
+  font-size: 11px;
+  color: var(--muted);
+}
 .lumen-preview .mono {
   font-family: ui-monospace, monospace;
 }

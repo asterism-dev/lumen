@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T extends string">
+<script setup lang="ts" generic="T extends string, D = unknown, R = unknown">
 import { Check, ChevronDown, LoaderCircle } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import {
@@ -13,16 +13,19 @@ import {
 } from 'reka-ui';
 import { useFieldControl } from '../composables/useField';
 
-export interface ComboboxOption<V extends string = string> {
+export interface ComboboxOption<V extends string = string, D = unknown> {
   value: V;
   label: string;
   disabled?: boolean;
   // Shown as tooltip, e.g. why the option is disabled
   title?: string;
+  class?: string;
+  // Passed through untouched, e.g. the search hit behind the option
+  data?: D;
 }
 
 const props = defineProps<{
-  items: ComboboxOption<T>[];
+  items: ComboboxOption<T, D>[];
   label?: string;
   placeholder?: string;
   searchPlaceholder?: string;
@@ -30,8 +33,10 @@ const props = defineProps<{
   loading?: boolean;
   invalid?: boolean;
   // Runs before a pick is committed; a rejection keeps the panel open and shows its message
-  beforeSelect?: (value: T, signal: AbortSignal) => Promise<unknown>;
+  beforeSelect?: (value: T, signal: AbortSignal) => Promise<R>;
 }>();
+// Fires after a commit with the beforeSelect result (undefined without beforeSelect)
+const emit = defineEmits<{ select: [value: T, result: R | undefined] }>();
 const model = defineModel<T | ''>({ required: true });
 // Filtering is the caller's job: watch `search` and pass the matching `items`
 const search = defineModel<string>('search', { default: '' });
@@ -45,8 +50,10 @@ defineSlots<{
   trigger?: (props: { value: T | ''; label: string; open: boolean }) => unknown;
   value?: (props: { value: T | ''; label: string }) => unknown;
   header?: () => unknown;
+  'search-start'?: () => unknown;
   'search-actions'?: () => unknown;
-  item?: (props: { item: ComboboxOption<T>; selected: boolean }) => unknown;
+  error?: (props: { error: unknown }) => unknown;
+  item?: (props: { item: ComboboxOption<T, D>; selected: boolean }) => unknown;
   empty?: () => unknown;
 }>();
 
@@ -55,33 +62,34 @@ const selectedLabel = computed(
 );
 
 const pending = ref<T | null>(null);
-const pickError = ref('');
+const pickError = ref<{ error: unknown } | null>(null);
 let pickAbort: AbortController | undefined;
 
 watch(open, (isOpen) => {
   if (isOpen) search.value = '';
   else pickAbort?.abort();
-  pickError.value = '';
+  pickError.value = null;
 });
 
-function commit(value: T) {
+function commit(value: T, result?: R) {
   model.value = value;
   open.value = false;
+  emit('select', value, result);
 }
 
 async function onPick(value: unknown) {
   if (typeof value !== 'string') return;
   pickAbort?.abort();
-  pickError.value = '';
+  pickError.value = null;
   if (!props.beforeSelect) return commit(value as T);
   const controller = new AbortController();
   pickAbort = controller;
   pending.value = value as T;
   try {
-    await props.beforeSelect(value as T, controller.signal);
-    if (!controller.signal.aborted) commit(value as T);
-  } catch (e) {
-    if (!controller.signal.aborted) pickError.value = e instanceof Error ? e.message : String(e);
+    const result = await props.beforeSelect(value as T, controller.signal);
+    if (!controller.signal.aborted) commit(value as T, result);
+  } catch (error) {
+    if (!controller.signal.aborted) pickError.value = { error };
   } finally {
     if (pickAbort === controller) pending.value = null;
   }
@@ -114,6 +122,7 @@ async function onPick(value: unknown) {
         <slot name="header" />
         <ListboxRoot :model-value="model" class="lm-combobox__listbox" @update:model-value="onPick">
           <div class="lm-combobox__search">
+            <slot name="search-start" />
             <ListboxFilter
               v-model="search"
               auto-focus
@@ -123,7 +132,11 @@ async function onPick(value: unknown) {
             />
             <slot name="search-actions" />
           </div>
-          <p v-if="pickError" class="lm-combobox__error" role="alert">{{ pickError }}</p>
+          <div v-if="pickError" class="lm-combobox__error" role="alert">
+            <slot name="error" :error="pickError.error">{{
+              pickError.error instanceof Error ? pickError.error.message : String(pickError.error)
+            }}</slot>
+          </div>
           <ListboxContent class="lm-combobox__list">
             <ListboxItem
               v-for="item in items"
@@ -133,6 +146,7 @@ async function onPick(value: unknown) {
               :title="item.title"
               :aria-busy="pending === item.value || undefined"
               class="lm-combobox__item"
+              :class="item.class"
             >
               <slot name="item" :item="item" :selected="item.value === model">
                 <span class="lm-combobox__text">{{ item.label }}</span>
@@ -255,7 +269,6 @@ async function onPick(value: unknown) {
     }
   }
   .lm-combobox__error {
-    margin: 0;
     padding: 4px 6px;
     color: var(--danger);
   }
